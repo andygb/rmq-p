@@ -73,7 +73,7 @@ public class LocalChannelTest {
                 Thread.sleep(sleep);
 
                 System.out.println(String.format("t %d end", tid));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
 

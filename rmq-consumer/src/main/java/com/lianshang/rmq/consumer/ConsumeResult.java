@@ -16,6 +16,11 @@ public class ConsumeResult {
         this.message = message;
     }
 
+    public ConsumeResult(String message) {
+        this.action = ConsumeAction.ACCEPT;
+        this.message = message;
+    }
+
     public ConsumeAction getAction() {
         return action;
     }

@@ -37,8 +37,8 @@ public class Message implements Serializable {
         return content;
     }
 
-    public String getContentString() {
-        return new String(content);
+    public String getContentString() throws SerializationException {
+        return SerializeUtils.deserialize(content, String.class, SerializeUtils.getContentSerializer());
     }
 
     public <T> T getContentBean(Class<T> clazz) throws SerializationException {

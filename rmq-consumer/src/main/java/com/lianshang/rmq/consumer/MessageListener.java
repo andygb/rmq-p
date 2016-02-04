@@ -4,7 +4,6 @@ import com.lianshang.rmq.common.Connector;
 import com.lianshang.rmq.common.ConstantDef;
 import com.lianshang.rmq.common.dto.Message;
 import com.lianshang.rmq.common.exception.ConnectionException;
-import com.lianshang.rmq.common.exception.SerializationException;
 import com.lianshang.rmq.common.serialize.SerializeUtils;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by yuan.zhong on 2016-01-27.
@@ -94,7 +92,7 @@ public class MessageListener {
                         channel.basicAck(envelope.getDeliveryTag(), false);
                         break;
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOGGER.error("Consume error, message tag {}", envelope.getDeliveryTag(), e);
                 throw new IOException(e);
             }

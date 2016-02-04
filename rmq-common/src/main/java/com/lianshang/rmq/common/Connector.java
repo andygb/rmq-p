@@ -119,7 +119,7 @@ public class Connector {
                 int port = StringUtil.parseInt(segs[1]);
 
                 addressList.add(new Address(ip, port));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOGGER.error("Address config error, config {} : ", addressConfig, e);
             }
 
@@ -154,7 +154,7 @@ public class Connector {
                             channel.close();
                         }
                     } catch (com.rabbitmq.client.AlreadyClosedException ignored) {
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         LOGGER.error("Channel clear error : ",e);
                     }
                 }

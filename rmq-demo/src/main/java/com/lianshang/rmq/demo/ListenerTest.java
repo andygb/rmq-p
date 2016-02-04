@@ -3,13 +3,14 @@ package com.lianshang.rmq.demo;
 
 import com.lianshang.rmq.common.dto.Message;
 import com.lianshang.rmq.common.exception.ConnectionException;
+import com.lianshang.rmq.common.exception.SerializationException;
+import com.lianshang.rmq.consumer.ConsumeAction;
+import com.lianshang.rmq.consumer.ConsumeResult;
 import com.lianshang.rmq.consumer.MessageConsumer;
 import com.lianshang.rmq.consumer.MessageListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by yuan.zhong on 2016-01-27.
@@ -112,9 +113,20 @@ public class ListenerTest {
         }
 
         @Override
-        public void onMessage(Message message) {
+        public ConsumeResult onMessage(Message message)  {
+            String contentString = null;
+            try {
+                contentString = message.getContentString();
+            } catch (SerializationException e) {
+                e.printStackTrace();
+            }
             System.out.println(String.format("msg received by {%s}, topic {%s}, no {%s}, content {%s}",
-                     consumerId, topic, no, message.getContentString()));
+                     consumerId, topic, no, contentString));
+
+            if ("re".equals(contentString)) {
+                return new ConsumeResult(ConsumeAction.RETRY, "RE");
+            }
+            return new ConsumeResult("OK");
         }
     }
 
@@ -129,10 +141,15 @@ public class ListenerTest {
         long lastTime;
 
         @Override
-        public void onMessage(Message message) {
+        public ConsumeResult onMessage(Message message) {
             if (running) {
-                update(message.getContentString());
+                try {
+                    update(message.getContentString());
+                } catch (SerializationException e) {
+                    e.printStackTrace();
+                }
             }
+            return new ConsumeResult("OK");
         }
 
         synchronized private void update (String content) {
