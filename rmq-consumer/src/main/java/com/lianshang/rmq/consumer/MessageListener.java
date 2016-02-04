@@ -10,6 +10,8 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -20,6 +22,8 @@ import java.util.concurrent.TimeoutException;
  * @author yuan.zhong
  */
 public class MessageListener {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(MessageListener.class);
 
     String topic;
 
@@ -44,7 +48,7 @@ public class MessageListener {
 
             channel.queueBind(queueName, topic, "");
 
-            channel.basicConsume(queueName, true, new ApplyConsumer(channel, consumer));
+            channel.basicConsume(queueName, false, new ApplyConsumer(channel, consumer));
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
@@ -70,11 +74,31 @@ public class MessageListener {
             Message message;
             try {
                 message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
-            } catch (SerializationException e) {
+                ConsumeResult result = messageConsumer.onMessage(message);
+
+                switch (result.action) {
+                    case REJECT:
+                        channel.basicNack(envelope.getDeliveryTag(), false, false);
+                        break;
+                    case RETRY:
+                        if (envelope.isRedeliver()) {
+                            // 已是重试消息
+                            channel.basicNack(envelope.getDeliveryTag(), false, false);
+                            LOGGER.error("Message tag {} consume retry again", envelope.getDeliveryTag());
+                        } else {
+                            channel.basicNack(envelope.getDeliveryTag(), false, true);
+                        }
+                        break;
+                    case ACCEPT:
+                    default:
+                        channel.basicAck(envelope.getDeliveryTag(), false);
+                        break;
+                }
+            } catch (Exception e) {
+                LOGGER.error("Consume error, message tag {}", envelope.getDeliveryTag(), e);
                 throw new IOException(e);
             }
 
-            messageConsumer.onMessage(message);
         }
 
     }

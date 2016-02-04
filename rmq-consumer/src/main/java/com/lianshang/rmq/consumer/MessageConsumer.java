@@ -9,5 +9,5 @@ import com.lianshang.rmq.common.dto.Message;
  */
 public interface MessageConsumer {
 
-    void onMessage(Message message);
+    ConsumeResult onMessage(Message message);
 }
