@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by yuan.zhong on 2016-01-27.

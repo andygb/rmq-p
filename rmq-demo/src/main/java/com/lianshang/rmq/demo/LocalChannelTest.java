@@ -7,9 +7,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ShutdownListener;
 import com.rabbitmq.client.ShutdownSignalException;
 
-import java.io.IOException;
 import java.util.Scanner;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by yuan.zhong on 2016-02-04.

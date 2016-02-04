@@ -93,8 +93,9 @@ public class MessageListener {
                         break;
                 }
             } catch (Throwable e) {
+                // 发生异常，重试
                 LOGGER.error("Consume error, message tag {}", envelope.getDeliveryTag(), e);
-                throw new IOException(e);
+                channel.basicNack(envelope.getDeliveryTag(), false, true);
             }
 
         }
