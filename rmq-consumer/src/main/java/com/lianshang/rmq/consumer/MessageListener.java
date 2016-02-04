@@ -2,7 +2,14 @@ package com.lianshang.rmq.consumer;
 
 import com.lianshang.rmq.common.Connector;
 import com.lianshang.rmq.common.ConstantDef;
-import com.rabbitmq.client.*;
+import com.lianshang.rmq.common.dto.Message;
+import com.lianshang.rmq.common.exception.ConnectionException;
+import com.lianshang.rmq.common.exception.SerializationException;
+import com.lianshang.rmq.common.serialize.SerializeUtils;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -20,22 +27,32 @@ public class MessageListener {
 
     MessageConsumer consumer;
 
-    public MessageListener(String topic, String consumerId, MessageConsumer consumer) throws IOException, TimeoutException {
+    Channel channel;
+
+    public MessageListener(String topic, String consumerId, MessageConsumer consumer) throws ConnectionException {
         this.topic = topic;
         this.consumerId = consumerId;
         this.consumer = consumer;
 
-        Connection connection = Connector.getConnection();
 
-        Channel channel = connection.createChannel();
+        channel = Connector.getChannel();
 
-        channel.exchangeDeclare(topic, "fanout");
         String queueName = String.format("%s%s%s", topic, ConstantDef.EXCHANGE_QUEUE_SEP, consumerId);
-        channel.queueDeclare(queueName, false, false, false, null);
-        channel.queueBind(queueName, topic, "");
 
-        channel.basicConsume(queueName, true, new ApplyConsumer(channel, consumer));
+        try {
+            channel.queueDeclare(queueName, false, false, false, null);
 
+            channel.queueBind(queueName, topic, "");
+
+            channel.basicConsume(queueName, true, new ApplyConsumer(channel, consumer));
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        }
+
+    }
+
+    public void close() throws ConnectionException {
+         Connector.close();
     }
 
     class ApplyConsumer extends DefaultConsumer {
@@ -49,8 +66,16 @@ public class MessageListener {
 
         @Override
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-            String content = new String(body);
-            messageConsumer.onMessage(new Message(content));
+
+            Message message;
+            try {
+                message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
+            } catch (SerializationException e) {
+                throw new IOException(e);
+            }
+
+            messageConsumer.onMessage(message);
         }
+
     }
 }

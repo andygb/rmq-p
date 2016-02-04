@@ -12,6 +12,8 @@
         <module>rmq-consumer</module>
         <module>rmq-common</module>
         <module>rmq-provider</module>
+        <module>rmq-demo</module>
+        <module>rmq-admin</module>
     </modules>
 
 
