@@ -33,6 +33,10 @@ public class Message implements Serializable {
         return birthTime;
     }
 
+    public byte[] getContentBytes() {
+        return content;
+    }
+
     public String getContentString() throws SerializationException {
         return new String(content);
 //        return SerializeUtils.deserialize(content, String.class, SerializeUtils.getContentSerializer());
