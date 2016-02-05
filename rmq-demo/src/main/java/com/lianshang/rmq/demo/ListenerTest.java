@@ -11,6 +11,7 @@ import com.lianshang.rmq.consumer.MessageListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yuan.zhong on 2016-01-27.
@@ -116,12 +117,12 @@ public class ListenerTest {
         public ConsumeResult onMessage(Message message)  {
             String contentString = null;
             try {
-                contentString = message.getContentString();
+                contentString = message.getContentBean(String.class);
+                System.out.println(String.format("msg received by {%s}, topic {%s}, no {%s}, content {%s}",
+                        consumerId, topic, no, contentString));
             } catch (SerializationException e) {
                 e.printStackTrace();
             }
-            System.out.println(String.format("msg received by {%s}, topic {%s}, no {%s}, content {%s}",
-                     consumerId, topic, no, contentString));
 
             if ("re".equals(contentString)) {
                 return new ConsumeResult(ConsumeAction.RETRY, "RE");

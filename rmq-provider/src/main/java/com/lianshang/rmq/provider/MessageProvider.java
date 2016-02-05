@@ -6,7 +6,6 @@ import com.lianshang.rmq.common.dto.Message;
 import com.lianshang.rmq.common.exception.ConnectionException;
 import com.lianshang.rmq.common.exception.SerializationException;
 import com.lianshang.rmq.common.serialize.SerializeUtils;
-import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,23 +27,50 @@ public class MessageProvider {
         this.topic = topic;
     }
 
-    public void send(Object content) throws SerializationException, ConnectionException {
+    public void sendBytes(byte[] content) throws ConnectionException, SerializationException {
+        if (content == null) {
+            throw new IllegalArgumentException("Message content could not be null!");
+        }
+
+        sendContentBytes(content);
+    }
+
+    public void sendString(String content) throws ConnectionException, SerializationException {
+        if (content == null) {
+            throw new IllegalArgumentException("Message content could not be null!");
+        }
+
+        sendContentBytes(content.getBytes());
+    }
+
+    public void sendObject(Object content) throws SerializationException, ConnectionException {
 
         if (content == null) {
             throw new IllegalArgumentException("Message content could not be null!");
         }
 
-        Channel channel = Connector.getChannel();
+        if (content instanceof String) {
+            sendString((String) content);
+            return;
+        }
+
+        if (content instanceof byte[]) {
+            sendContentBytes((byte[]) content);
+            return;
+        }
 
         byte[] contentBytes = SerializeUtils.serialize(content, SerializeUtils.getContentSerializer());
 
-        Message message = new Message(IpUtil.getFirstNoLoopbackIP4Address(), new Date(), contentBytes);
+        sendContentBytes(contentBytes);
+    }
+
+    private void sendContentBytes(byte[] content) throws SerializationException, ConnectionException {
+        Message message = new Message(IpUtil.getFirstNoLoopbackIP4Address(), new Date(), content);
 
         byte[] messageBytes = SerializeUtils.serialize(message, SerializeUtils.getMessageSerializer());
-//        channel.exchangeDeclare(topic, "fanout");
 
         try {
-            channel.basicPublish(topic, "", null, messageBytes);
+            Connector.getChannel().basicPublish(topic, "", null, messageBytes);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }

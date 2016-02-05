@@ -43,6 +43,7 @@ public class HessianSerializer implements AbstractSerializer {
 
         try {
             return (T) h2in.readObject(clazz);
+
         } catch (Throwable t) {
             throw new SerializationException(t);
         } finally {

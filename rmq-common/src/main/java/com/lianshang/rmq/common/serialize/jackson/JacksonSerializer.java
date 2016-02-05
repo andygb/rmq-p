@@ -3,13 +3,16 @@ package com.lianshang.rmq.common.serialize.jackson;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lianshang.rmq.common.dto.Message;
 import com.lianshang.rmq.common.exception.SerializationException;
 import com.lianshang.rmq.common.serialize.AbstractSerializer;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
 /**
  * Created by yuan.zhong on 2016-02-02.
@@ -32,6 +35,7 @@ public class JacksonSerializer implements AbstractSerializer {
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         mapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+
     }
 
     @Override

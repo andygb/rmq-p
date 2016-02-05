@@ -4,10 +4,7 @@ import com.lianshang.rmq.common.exception.ConnectionException;
 import com.lianshang.rmq.common.exception.SerializationException;
 import com.lianshang.rmq.provider.MessageProvider;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by yuan.zhong on 2016-01-27.
@@ -39,6 +36,7 @@ public class ProviderTest {
 
         Random random = new Random();
 
+        int id = 0;
         while (true) {
 
             int index = random.nextInt(providers.size());
@@ -49,11 +47,16 @@ public class ProviderTest {
 
             String input = scanner.nextLine();
 
+            Map<String, Object> content = new TreeMap<>();
+            content.put("id", id++);
+            content.put("msg", input);
+
             if ("quit".equals(input)) {
                 break;
             }
 
-            provider.send(input);
+            provider.sendString(input);
+//            provider.sendObject(boxBytes(input.getBytes()));
         }
 
         for (MessageProvider provider : providers) {
@@ -83,7 +86,7 @@ public class ProviderTest {
             thread.join();
         }
 
-        provider.send("quit");
+        provider.sendString("quit");
         provider.close();
 
         for (int i = 0; i < threads.size(); i++) {
@@ -93,6 +96,16 @@ public class ProviderTest {
 
             System.out.println(String.format("Provider %d finished during %d ms", i, ms));
         }
+    }
+
+    private static Byte[] boxBytes(byte[] bytes) {
+        Byte[] boxBytes = new Byte[bytes.length];
+
+        for (int i = 0; i < bytes.length; i++) {
+            boxBytes[i] = bytes[i];
+        }
+
+        return boxBytes;
     }
 
     static class TestMessageSendThread extends Thread {
@@ -118,7 +131,7 @@ public class ProviderTest {
             beginTime = System.currentTimeMillis();
             for (int i = 0; i < loop; i++) {
                 try {
-                    provider.send(content);
+                    provider.sendString(content);
                 } catch (SerializationException | ConnectionException e) {
                     e.printStackTrace();
                 }
