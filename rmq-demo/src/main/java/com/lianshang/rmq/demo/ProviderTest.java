@@ -55,7 +55,7 @@ public class ProviderTest {
                 break;
             }
 
-            provider.sendString(input);
+            provider.sendBytes(input.getBytes());
 //            provider.sendObject(boxBytes(input.getBytes()));
         }
 

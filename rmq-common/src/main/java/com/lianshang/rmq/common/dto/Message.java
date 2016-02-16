@@ -48,6 +48,10 @@ public class Message implements Serializable {
             return (T) getContentString();
         }
 
+        if (clazz == byte[].class) {
+            return (T) getContentBytes();
+        }
+
         return SerializeUtils.deserialize(content, clazz, SerializeUtils.getContentSerializer());
     }
 }
