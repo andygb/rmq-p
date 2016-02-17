@@ -115,11 +115,11 @@ public class ListenerTest {
 
         @Override
         public ConsumeResult onMessage(Message message)  {
-            byte[] contentString = null;
+            String contentString = null;
             try {
-                contentString = message.getContentBean(byte[].class);
+                contentString = message.getContentString();
                 System.out.println(String.format("msg received by {%s}, topic {%s}, no {%s}, content {%s}",
-                        consumerId, topic, no, new String(contentString)));
+                        consumerId, topic, no, contentString));
             } catch (SerializationException e) {
                 e.printStackTrace();
             }
