@@ -9,5 +9,10 @@ import com.lianshang.rmq.common.dto.Message;
  */
 public interface MessageConsumer {
 
+    /**
+     * 处理消息
+     * @param message 消息体
+     * @return  消息处理结果
+     */
     ConsumeResult onMessage(Message message);
 }

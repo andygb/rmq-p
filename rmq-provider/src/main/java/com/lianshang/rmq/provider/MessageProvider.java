@@ -15,6 +15,8 @@ import java.util.Date;
 /**
  * Created by yuan.zhong on 2016-01-27.
  *
+ * 消息发布者
+ *
  * @author yuan.zhong
  */
 public class MessageProvider {
@@ -23,10 +25,20 @@ public class MessageProvider {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MessageProvider.class);
 
+    /**
+     * 构造消息发布者
+     * @param topic 消息主题
+     */
     public MessageProvider(String topic) {
         this.topic = topic;
     }
 
+    /**
+     * 发送二进制消息
+     * @param content   消息内容
+     * @throws ConnectionException
+     * @throws SerializationException
+     */
     public void sendBytes(byte[] content) throws ConnectionException, SerializationException {
         if (content == null) {
             throw new IllegalArgumentException("Message content could not be null!");
@@ -35,6 +47,12 @@ public class MessageProvider {
         sendContentBytes(content);
     }
 
+    /**
+     * 发送字符串消息
+     * @param content   消息内容
+     * @throws ConnectionException
+     * @throws SerializationException
+     */
     public void sendString(String content) throws ConnectionException, SerializationException {
         if (content == null) {
             throw new IllegalArgumentException("Message content could not be null!");
@@ -43,6 +61,12 @@ public class MessageProvider {
         sendContentBytes(content.getBytes());
     }
 
+    /**
+     * 发送对象消息
+     * @param content   消息内容
+     * @throws SerializationException
+     * @throws ConnectionException
+     */
     public void sendObject(Object content) throws SerializationException, ConnectionException {
 
         if (content == null) {

@@ -24,6 +24,13 @@ public class ProviderTest {
 //    @Test
     public static void functionalTest() throws SerializationException, ConnectionException {
 
+        MessageProvider messageProvider = new MessageProvider("test-topic");
+
+        messageProvider.sendString("An example message");
+
+        messageProvider.close();
+
+
         Scanner scanner = new Scanner(System.in);
 
         String[] topics = {"topic1", "topic2"};

@@ -17,6 +17,8 @@ import java.io.IOException;
 /**
  * Created by yuan.zhong on 2016-01-27.
  *
+ * 消息监听器
+ *
  * @author yuan.zhong
  */
 public class MessageListener {
@@ -29,7 +31,13 @@ public class MessageListener {
 
     MessageConsumer consumer;
 
-
+    /**
+     * 构造监听器
+     * @param topic 消息主题
+     * @param consumerId    消费者ID
+     * @param consumer      消费者，即消息处理器
+     * @throws ConnectionException
+     */
     public MessageListener(String topic, String consumerId, MessageConsumer consumer) throws ConnectionException {
         this.topic = topic;
         this.consumerId = consumerId;
