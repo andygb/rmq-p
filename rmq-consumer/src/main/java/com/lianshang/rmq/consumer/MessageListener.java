@@ -29,7 +29,6 @@ public class MessageListener {
 
     MessageConsumer consumer;
 
-    Channel channel;
 
     public MessageListener(String topic, String consumerId, MessageConsumer consumer) throws ConnectionException {
         this.topic = topic;
@@ -37,7 +36,7 @@ public class MessageListener {
         this.consumer = consumer;
 
 
-        channel = Connector.getChannel();
+        Channel channel = Connector.getChannel();
 
         String queueName = String.format("%s%s%s", topic, ConstantDef.EXCHANGE_QUEUE_SEP, consumerId);
 
@@ -70,9 +69,18 @@ public class MessageListener {
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
 
             Message message;
+            Channel channel = null;
+            try {
+                channel = Connector.getChannel();
+            } catch (ConnectionException e) {
+                LOGGER.error("Connect channel error", e);
+                return;
+            }
+
             try {
                 message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
                 ConsumeResult result = messageConsumer.onMessage(message);
+
 
                 switch (result.action) {
                     case REJECT:
