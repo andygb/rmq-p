@@ -77,14 +77,6 @@ public class MessageListener {
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
 
             Message message;
-            Channel channel = null;
-            try {
-                channel = Connector.getChannel();
-            } catch (ConnectionException e) {
-                LOGGER.error("Connect channel error", e);
-                return;
-            }
-
             try {
                 message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
                 ConsumeResult result = messageConsumer.onMessage(message);
@@ -92,26 +84,34 @@ public class MessageListener {
 
                 switch (result.action) {
                     case REJECT:
-                        channel.basicNack(envelope.getDeliveryTag(), false, false);
+                        Connector.getChannel().basicNack(envelope.getDeliveryTag(), false, false);
                         break;
                     case RETRY:
                         if (envelope.isRedeliver()) {
                             // 已是重试消息
-                            channel.basicNack(envelope.getDeliveryTag(), false, false);
+                            Connector.getChannel().basicNack(envelope.getDeliveryTag(), false, false);
                             LOGGER.error("Message tag {} consume retry again", envelope.getDeliveryTag());
                         } else {
-                            channel.basicNack(envelope.getDeliveryTag(), false, true);
+                            Connector.getChannel().basicNack(envelope.getDeliveryTag(), false, true);
                         }
                         break;
                     case ACCEPT:
                     default:
-                        channel.basicAck(envelope.getDeliveryTag(), false);
+                        Connector.getChannel().basicAck(envelope.getDeliveryTag(), false);
                         break;
                 }
             } catch (Throwable e) {
                 // 发生异常，重试
                 LOGGER.error("Consume error, message tag {}", envelope.getDeliveryTag(), e);
-                channel.basicNack(envelope.getDeliveryTag(), false, true);
+                try {
+                    if (envelope.isRedeliver()) {
+                        Connector.getChannel().basicNack(envelope.getDeliveryTag(), false, false);
+                    } else {
+                        Connector.getChannel().basicNack(envelope.getDeliveryTag(), false, true);
+                    }
+                } catch (ConnectionException e1) {
+                    LOGGER.error("Ack error, message tag {}", envelope.getDeliveryTag(), e1);
+                }
             }
 
         }
