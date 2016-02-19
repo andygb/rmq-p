@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by yuan.zhong on 2016-01-27.
@@ -31,6 +32,8 @@ public class MessageListener {
 
     MessageConsumer consumer;
 
+    Channel channel;
+
     /**
      * 构造监听器
      * @param topic 消息主题
@@ -44,11 +47,13 @@ public class MessageListener {
         this.consumer = consumer;
 
 
-        Channel channel = Connector.getChannel();
 
         String queueName = String.format("%s%s%s", topic, ConstantDef.EXCHANGE_QUEUE_SEP, consumerId);
 
         try {
+
+            channel = Connector.getConnection().createChannel();
+
             channel.queueDeclare(queueName, false, false, false, null);
 
             channel.queueBind(queueName, topic, "");
@@ -61,7 +66,11 @@ public class MessageListener {
     }
 
     public void close() throws ConnectionException {
-         Connector.close();
+        try {
+            channel.close();
+        } catch (IOException | TimeoutException e) {
+            throw new ConnectionException(e);
+        }
     }
 
     class ApplyConsumer extends DefaultConsumer {
@@ -84,33 +93,30 @@ public class MessageListener {
 
                 switch (result.action) {
                     case REJECT:
-                        Connector.getChannel().basicNack(envelope.getDeliveryTag(), false, false);
+                        channel.basicNack(envelope.getDeliveryTag(), false, false);
                         break;
                     case RETRY:
                         if (envelope.isRedeliver()) {
                             // 已是重试消息
-                            Connector.getChannel().basicNack(envelope.getDeliveryTag(), false, false);
+//                            Connector.getChannel().basicAck(envelope.getDeliveryTag(), false);
+                            channel.basicNack(envelope.getDeliveryTag(), false, false);
                             LOGGER.error("Message tag {} consume retry again", envelope.getDeliveryTag());
                         } else {
-                            Connector.getChannel().basicNack(envelope.getDeliveryTag(), false, true);
+                            channel.basicNack(envelope.getDeliveryTag(), false, true);
                         }
                         break;
                     case ACCEPT:
                     default:
-                        Connector.getChannel().basicAck(envelope.getDeliveryTag(), false);
+                        channel.basicAck(envelope.getDeliveryTag(), false);
                         break;
                 }
             } catch (Throwable e) {
                 // 发生异常，重试
                 LOGGER.error("Consume error, message tag {}", envelope.getDeliveryTag(), e);
-                try {
-                    if (envelope.isRedeliver()) {
-                        Connector.getChannel().basicNack(envelope.getDeliveryTag(), false, false);
-                    } else {
-                        Connector.getChannel().basicNack(envelope.getDeliveryTag(), false, true);
-                    }
-                } catch (ConnectionException e1) {
-                    LOGGER.error("Ack error, message tag {}", envelope.getDeliveryTag(), e1);
+                if (envelope.isRedeliver()) {
+                    channel.basicNack(envelope.getDeliveryTag(), false, false);
+                } else {
+                    channel.basicNack(envelope.getDeliveryTag(), false, true);
                 }
             }
 

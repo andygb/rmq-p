@@ -1,5 +1,5 @@
 # RMQ
-
+[version]: 1.0.0-SNAPSHOT
  
 ### 什么是RMQ?
 RMQ是一个基于RabbitMQ实现的消息队列系统，实现了发布/订阅模式

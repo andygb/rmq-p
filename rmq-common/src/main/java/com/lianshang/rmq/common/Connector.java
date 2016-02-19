@@ -65,7 +65,7 @@ public class Connector {
         }
     }
 
-    private static Connection getConnection() throws ConnectionException {
+    public static Connection getConnection() throws ConnectionException {
         if (!isValidConnection(connection)) {
             synchronized (Connector.class) {
                 if (!isValidConnection(connection)) {
@@ -87,8 +87,8 @@ public class Connector {
     private static Connection newConnection() throws ConnectionException {
         ConnectionFactory factory = new ConnectionFactory();
 
-        factory.setUsername(LionUtil.getString(USERNAME_CONFIG_KEY));
-        factory.setPassword(LionUtil.getString(PASSWORD_CONFIG_KEY));
+//        factory.setUsername(LionUtil.getString(USERNAME_CONFIG_KEY));
+//        factory.setPassword(LionUtil.getString(PASSWORD_CONFIG_KEY));
         Address[] addresses = getBrokerAddresses();
         if (addresses == null || addresses.length == 0) {
             throw new ConnectionException("No available broker");
