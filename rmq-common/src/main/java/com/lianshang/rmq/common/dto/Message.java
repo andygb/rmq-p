@@ -25,31 +25,50 @@ public class Message implements Serializable {
         this.content = content;
     }
 
+    /**
+     * 获取发送方IP
+     * @return
+     */
     public String getProducerIp() {
         return producerIp;
     }
 
+    /**
+     * 获取消息产生的时间
+     * @return
+     */
     public Date getBirthTime() {
         return birthTime;
     }
 
+    /**
+     * 以二进制形式获取消息内容
+     * @return
+     */
     public byte[] getContentBytes() {
         return content;
     }
 
+    /**
+     * 以字符串形式获取消息内容
+     * @return
+     * @throws SerializationException
+     */
     public String getContentString() throws SerializationException {
         return new String(content);
 //        return SerializeUtils.deserialize(content, String.class, SerializeUtils.getContentSerializer());
     }
 
-    public <T> T getContentBean(Class<T> clazz) throws SerializationException {
+    /**
+     * 反序列化获取消息内容
+     * @param clazz 需为实现Serializable的POJO
+     * @return
+     * @throws SerializationException
+     */
+    public <T extends Serializable> T getContentBean(Class<T> clazz) throws SerializationException {
 
         if (clazz == String.class) {
             return (T) getContentString();
-        }
-
-        if (clazz == byte[].class) {
-            return (T) getContentBytes();
         }
 
         return SerializeUtils.deserialize(content, clazz, SerializeUtils.getContentSerializer());

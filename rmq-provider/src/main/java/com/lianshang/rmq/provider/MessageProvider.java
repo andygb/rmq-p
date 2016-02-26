@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -63,11 +64,11 @@ public class MessageProvider {
 
     /**
      * 发送对象消息
-     * @param content   消息内容
+     * @param content   消息内容，需要是实现Serializable的POJO
      * @throws SerializationException
      * @throws ConnectionException
      */
-    public void sendObject(Object content) throws SerializationException, ConnectionException {
+    public <T extends Serializable> void sendObject(T content) throws SerializationException, ConnectionException {
 
         if (content == null) {
             throw new IllegalArgumentException("Message content could not be null!");

@@ -24,13 +24,6 @@ public class ProviderTest {
 //    @Test
     public static void functionalTest() throws SerializationException, ConnectionException {
 
-        MessageProvider messageProvider = new MessageProvider("test-topic");
-
-        messageProvider.sendString("An example message");
-
-        messageProvider.close();
-
-
         Scanner scanner = new Scanner(System.in);
 
         String[] topics = {"topic1", "topic2"};
@@ -54,16 +47,15 @@ public class ProviderTest {
 
             String input = scanner.nextLine();
 
-            Map<String, Object> content = new TreeMap<>();
-            content.put("id", id++);
-            content.put("msg", input);
+
 
             if ("quit".equals(input)) {
                 break;
             }
 
-            provider.sendBytes(input.getBytes());
+//            provider.sendBytes(input.getBytes());
 //            provider.sendObject(boxBytes(input.getBytes()));
+            provider.sendObject(new TestClass(input));
         }
 
         for (MessageProvider provider : providers) {
@@ -165,4 +157,5 @@ public class ProviderTest {
         }
         return sb.toString();
     }
+
 }
