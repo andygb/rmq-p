@@ -138,3 +138,16 @@ public class MessageListener {
     </bean>
 ```
 其中`testConsumer`为一个实现MessageConsumer的类的实例bean
+
+---
+
+### 目前已有topic
+
+|topic | 说明|
+|------|-------|
+|demand.publish.success|发布采购需求成功|
+|demand.audit.success|审核采购需求成功|
+|trade.create.success|创建订单成功|
+
+
+
