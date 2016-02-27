@@ -32,6 +32,8 @@ public class MessageListener {
 
     MessageConsumer consumer;
 
+    ApplyConsumer applyConsumer;
+
     Channel channel;
 
     /**
@@ -85,38 +87,37 @@ public class MessageListener {
         @Override
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
 
-            Message message;
             try {
-                message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
+                Message message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
                 ConsumeResult result = messageConsumer.onMessage(message);
 
 
                 switch (result.action) {
                     case REJECT:
-                        channel.basicNack(envelope.getDeliveryTag(), false, false);
+                        getChannel().basicNack(envelope.getDeliveryTag(), false, false);
                         break;
                     case RETRY:
                         if (envelope.isRedeliver()) {
                             // 已是重试消息
 //                            Connector.getChannel().basicAck(envelope.getDeliveryTag(), false);
-                            channel.basicNack(envelope.getDeliveryTag(), false, false);
+                            getChannel().basicNack(envelope.getDeliveryTag(), false, false);
                             LOGGER.error("Message tag {} consume retry again", envelope.getDeliveryTag());
                         } else {
-                            channel.basicNack(envelope.getDeliveryTag(), false, true);
+                            getChannel().basicNack(envelope.getDeliveryTag(), false, true);
                         }
                         break;
                     case ACCEPT:
                     default:
-                        channel.basicAck(envelope.getDeliveryTag(), false);
+                        getChannel().basicAck(envelope.getDeliveryTag(), false);
                         break;
                 }
             } catch (Throwable e) {
                 // 发生异常，重试
                 LOGGER.error("Consume error, message tag {}", envelope.getDeliveryTag(), e);
                 if (envelope.isRedeliver()) {
-                    channel.basicNack(envelope.getDeliveryTag(), false, false);
+                    getChannel().basicNack(envelope.getDeliveryTag(), false, false);
                 } else {
-                    channel.basicNack(envelope.getDeliveryTag(), false, true);
+                    getChannel().basicNack(envelope.getDeliveryTag(), false, true);
                 }
             }
 
