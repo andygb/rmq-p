@@ -1,5 +1,8 @@
 package com.lianshang.rmq.consumer;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Transaction;
+import com.dianping.cat.message.internal.DefaultEvent;
 import com.lianshang.rmq.common.Connector;
 import com.lianshang.rmq.common.ConstantDef;
 import com.lianshang.rmq.common.dto.Message;
@@ -87,6 +90,9 @@ public class MessageListener {
         @Override
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
 
+            Transaction transaction = Cat.newTransaction("RMQ-Consume", topic);
+            transaction.addChild(new DefaultEvent("RMQ-Consume", topic));
+
             try {
                 Message message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
                 ConsumeResult result = messageConsumer.onMessage(message);
@@ -111,6 +117,8 @@ public class MessageListener {
                         getChannel().basicAck(envelope.getDeliveryTag(), false);
                         break;
                 }
+
+                transaction.setStatus(Transaction.SUCCESS);
             } catch (Throwable e) {
                 // 发生异常，重试
                 LOGGER.error("Consume error, message tag {}", envelope.getDeliveryTag(), e);
@@ -119,8 +127,10 @@ public class MessageListener {
                 } else {
                     getChannel().basicNack(envelope.getDeliveryTag(), false, true);
                 }
+                transaction.setStatus(e);
             }
 
+            transaction.complete();
         }
 
     }

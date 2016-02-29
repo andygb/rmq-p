@@ -55,6 +55,13 @@
             <version>1.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.dianping.cat</groupId>
+            <artifactId>cat-core</artifactId>
+            <version>2.0.0</version>
+            <type>jar</type>
+        </dependency>
+
         <!--biz-->
         <dependency>
             <groupId>com.lianshang.rmq</groupId>
@@ -62,5 +69,24 @@
             <version>1.0.0</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -1,5 +1,6 @@
 package com.lianshang.rmq.provider;
 
+import com.dianping.cat.Cat;
 import com.dianping.lion.EnvZooKeeperConfig;
 import com.lianshang.common.utils.general.IdGenerator;
 import com.lianshang.common.utils.general.IpUtil;
@@ -93,6 +94,8 @@ public class MessageProvider {
         byte[] contentBytes = SerializeUtils.serialize(content, SerializeUtils.getContentSerializer());
 
         sendContentBytes(contentBytes);
+
+        Cat.newEvent("RMQ-Send", topic);
     }
 
     private void sendContentBytes(byte[] content) throws SerializationException, ConnectionException {
