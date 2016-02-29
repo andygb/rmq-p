@@ -1,6 +1,7 @@
 package com.lianshang.rmq.consumer;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.DefaultEvent;
 import com.lianshang.rmq.common.Connector;
@@ -89,14 +90,16 @@ public class MessageListener {
 
         @Override
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-
             Transaction transaction = Cat.newTransaction("RMQ-Consume", topic);
-            transaction.addChild(new DefaultEvent("RMQ-Consume", topic));
+            Event event = Cat.newEvent("RMQ-Consume", topic);
+            transaction.addChild(event);
 
             try {
                 Message message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
                 ConsumeResult result = messageConsumer.onMessage(message);
 
+                event.addData("retry", envelope.isRedeliver() ? 1 : 0);
+                event.addData("consumerId", consumerId);
 
                 switch (result.action) {
                     case REJECT:
@@ -130,6 +133,7 @@ public class MessageListener {
                 transaction.setStatus(e);
             }
 
+            event.complete();
             transaction.complete();
         }
 
