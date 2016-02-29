@@ -52,6 +52,12 @@
             <version>4.12</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.dianping.lion</groupId>
+            <artifactId>lion-client</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <!--biz-->
         <dependency>
             <groupId>com.lianshang.rmq</groupId>

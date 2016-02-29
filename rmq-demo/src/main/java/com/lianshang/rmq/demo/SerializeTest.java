@@ -1,11 +1,15 @@
 package com.lianshang.rmq.demo;
 
+import com.google.common.collect.Lists;
 import com.lianshang.common.utils.general.MapUtils;
 import com.lianshang.common.utils.general.StringUtil;
+import com.lianshang.rmq.common.dto.Message;
 import com.lianshang.rmq.common.exception.SerializationException;
 import com.lianshang.rmq.common.serialize.AbstractSerializer;
 import com.lianshang.rmq.common.serialize.hessian.HessianSerializer;
 import com.lianshang.rmq.common.serialize.jackson.JacksonSerializer;
+import com.lianshang.rmq.common.serialize.thrift.MessageTranser;
+import com.lianshang.rmq.common.serialize.thrift.ThriftSerializer;
 import org.apache.commons.cli.*;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +27,8 @@ import java.util.*;
 public class SerializeTest {
 
     public static void main(String[] args) throws ParseException, SerializationException {
+        ThriftSerializer.registerTranser(Message.class, new MessageTranser());
+
         Options options = new Options();
 
         options.addOption("l", "loop", true, "循环次数");
@@ -55,7 +61,7 @@ public class SerializeTest {
         Map<String, List<SerializeStatis>> statisMap = new HashMap<>();
 
         for (Map.Entry<String, AbstractSerializer> serializerEntry : serializerMap.entrySet()) {
-            TestBean testBean = getBean(content, random.nextInt());
+            Message testBean = new Message(random.nextLong(), "127.0.0.1", new Date(), strGenerator(contentSize).getBytes());
 
             String serializerName = serializerEntry.getKey();
             AbstractSerializer serializer = serializerEntry.getValue();
@@ -65,9 +71,9 @@ public class SerializeTest {
                 byte[] bytes = serialize(testBean, serializer);
                 long time2 = System.currentTimeMillis();
                 int byteSize = bytes.length;
-                TestBean after = deserialize(bytes, serializer, TestBean.class);
+                Message after = deserialize(bytes, serializer, Message.class);
                 long time3 = System.currentTimeMillis();
-                assert testBean.equals(after);
+                assert equalMessage(testBean, after);
 
                 SerializeStatis statis = new SerializeStatis(time2 - time1, time3 - time2, byteSize);
 
@@ -96,7 +102,8 @@ public class SerializeTest {
         Map<String, AbstractSerializer> serializerMap = new HashMap<>();
 
         serializerMap.put("hessian", new HessianSerializer());
-        serializerMap.put("jackson", new JacksonSerializer());
+//        serializerMap.put("jackson", new JacksonSerializer());
+        serializerMap.put("thrift", new ThriftSerializer());
 
         return serializerMap;
     }
@@ -357,5 +364,16 @@ public class SerializeTest {
         }
 
         return stringBuilder.toString();
+    }
+
+    private boolean equalMessage(Message m1, Message m2) {
+        if (m1 == m2){
+            return true;
+        }
+
+        return m1.getId() == m2.getId()
+                && Arrays.equals(m1.getContentBytes(), m2.getContentBytes())
+                && m1.getBirthTime().equals(m2.getBirthTime())
+                && m1.getProducerIp().equals(m2.getProducerIp());
     }
 }

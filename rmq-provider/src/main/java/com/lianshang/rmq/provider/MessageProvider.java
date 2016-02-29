@@ -1,5 +1,6 @@
 package com.lianshang.rmq.provider;
 
+import com.dianping.lion.EnvZooKeeperConfig;
 import com.lianshang.common.utils.general.IpUtil;
 import com.lianshang.rmq.common.Connector;
 import com.lianshang.rmq.common.dto.Message;
@@ -25,6 +26,12 @@ public class MessageProvider {
     String topic;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MessageProvider.class);
+
+    private static final int machineIdx = EnvZooKeeperConfig.getMachineId();
+
+    private static final Object idLock = new Object();
+
+    private static int idRoteNum = 0;
 
     /**
      * 构造消息发布者
@@ -90,7 +97,7 @@ public class MessageProvider {
     }
 
     private void sendContentBytes(byte[] content) throws SerializationException, ConnectionException {
-        Message message = new Message(IpUtil.getFirstNoLoopbackIP4Address(), new Date(), content);
+        Message message = new Message(generateId(), IpUtil.getFirstNoLoopbackIP4Address(), new Date(), content);
 
         byte[] messageBytes = SerializeUtils.serialize(message, SerializeUtils.getMessageSerializer());
 
@@ -98,6 +105,13 @@ public class MessageProvider {
             Connector.getChannel().basicPublish(topic, "", null, messageBytes);
         } catch (IOException e) {
             throw new ConnectionException(e);
+        }
+    }
+
+    private static long generateId() {
+        synchronized (idLock) {
+            idRoteNum = (idRoteNum + 1) % 10000;
+            return System.currentTimeMillis() / 1000 * 1000000 + machineIdx * 10000 + idRoteNum;
         }
     }
 

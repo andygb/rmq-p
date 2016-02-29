@@ -13,16 +13,23 @@ import java.util.Date;
  */
 public class Message implements Serializable {
 
+    final long id;
+
     final String producerIp;
 
     final Date birthTime;
 
     final byte[] content;
 
-    public Message(String producerIp, Date birthTime, byte[] content) {
+    public Message(long id, String producerIp, Date birthTime, byte[] content) {
+        this.id = id;
         this.producerIp = producerIp;
         this.birthTime = birthTime;
         this.content = content;
+    }
+
+    public long getId() {
+        return id;
     }
 
     /**
@@ -73,4 +80,9 @@ public class Message implements Serializable {
 
         return SerializeUtils.deserialize(content, clazz, SerializeUtils.getContentSerializer());
     }
+
+    public byte[] getContent() {
+        return content;
+    }
+
 }

@@ -1,8 +1,11 @@
 package com.lianshang.rmq.common.serialize;
 
+import com.lianshang.rmq.common.dto.Message;
 import com.lianshang.rmq.common.exception.SerializationException;
 import com.lianshang.rmq.common.serialize.hessian.HessianSerializer;
 import com.lianshang.rmq.common.serialize.jackson.JacksonSerializer;
+import com.lianshang.rmq.common.serialize.thrift.MessageTranser;
+import com.lianshang.rmq.common.serialize.thrift.ThriftSerializer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,7 +21,12 @@ public class SerializeUtils {
 
     private static final AbstractSerializer contentSerializer = new JacksonSerializer();
 
-    private static final AbstractSerializer messageSerializer = new HessianSerializer();
+    private static final AbstractSerializer messageSerializer;
+
+    static {
+        ThriftSerializer.registerTranser(Message.class, new MessageTranser());
+        messageSerializer = new ThriftSerializer();
+    }
 
     public static AbstractSerializer getMessageSerializer() {
         return messageSerializer;
