@@ -148,14 +148,15 @@ public class MessageListener {
 |demand.publish.success|发布采购需求成功|
 |demand.audit.success|审核采购需求成功|
 |trade.create.success|创建订单成功|
+|trade.finish.success|订单交易成功|
 
 ---
 
 ### FAQ
 
-#### Q: RMQ是否去重?
+#### Q: RMQ消息会重复发么?
 
-A: 目前不包含去重功能，由业务方自行处理
+A: 会。由于RMQ保证消息不会丢失，所以当消息没有正确确认时或发生异常时，消息将会重发，因此可能重发时消息已经处理；消息体中有`Message.getId()`字段可获取消息的唯一ID, 因上述原因重发的消息其ID不变，业务方可根据该值做去重处理
 
 #### Q: RMQ发出的消息会保存多久，如果消息发出时接收方没有启动，那么启动时能否接收到消息？
 
