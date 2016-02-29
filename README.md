@@ -1,10 +1,33 @@
 # RMQ
-[version]: 1.0.0-SNAPSHOT
+
  
 ### 什么是RMQ?
 RMQ是一个基于RabbitMQ实现的消息队列系统，实现了发布/订阅模式
 
 ---
+
+### 当前版本
+
+[maven仓库中查看](http://192.168.1.251:8081/artifactory/webapp/search/artifact/?q=rmq-*-1.0.0.*)
+
+#### 发布者
+
+```
+		<dependency>
+            <groupId>com.lianshang.rmq</groupId>
+            <artifactId>rmq-provider</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+```
+
+#### 订阅者
+```
+        <dependency>
+            <groupId>com.lianshang.rmq</groupId>
+            <artifactId>rmq-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+```
 
 ### 相关名词
 * *topic* -- topic是一个预先在系统中申请到的字符串，用于标识一类消息的主题，发布方需将消息发布到特定的主题，接收方需声明自己接收特定主题的
