@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lianshang.rmq.biz.mapper.RmqTopicMapper">
+
+	<resultMap id="RmqTopicResult" type="RmqTopicEntity">
+		<id property="id" column="id" />
+		<id property="name" column="name" />
+        <id property="memo" column="memo"/>
+	</resultMap>
+
+	<sql id="tbl_name">
+		rmq_topic
+	</sql>
+
+	<sql id="select_sql">
+		select id, name, memo from <include refid="tbl_name"/>
+	</sql>
+
+	<insert id="insert" parameterType="RmqTopicEntity" useGeneratedKeys="true" keyProperty="entity.id">
+
+		insert into <include refid="tbl_name" />
+		(
+			name,
+            memo
+		)
+		values
+		(
+			#{entity.name},
+		)
+
+	</insert>
+
+	<select id="load" parameterType="map" resultMap="RmqTopicResult">
+
+		<include refid="select_sql"/>
+		where id = #{id}
+
+	</select>
+
+    <select id="loadByName" parameterType="map" resultMap="RmqTopicResult">
+        <include refid="select_sql"/>
+        where name = #{name}
+    </select>
+
+	<update id="update" parameterType="map">
+
+		update <include refid="tbl_name"/> set
+			name = #{entity.name},
+            memo = #{entity.name}
+		where id = #{entity.id}
+
+	</update>
+
+	<select id="queryCount" parameterType="map" resultType="int">
+
+		select count(1) from <include refid="tbl_name"/>
+
+	</select>
+
+	<select id="query" parameterType="map" resultMap="RmqTopicResult">
+
+		<include refid="select_sql"/>
+		limit #{offset}, #{pageSize}
+
+	</select>
+
+</mapper>
