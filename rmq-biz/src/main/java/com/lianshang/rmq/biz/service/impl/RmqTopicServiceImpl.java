@@ -76,7 +76,12 @@ public class RmqTopicServiceImpl implements RmqTopicService {
 		return rmqTopicMapper.queryCount();
 	}
 
-	private boolean validAdd(RmqTopic rmqTopic) {
+    @Override
+    public List<RmqTopic> getAll() {
+        // TODO get all impl
+    }
+
+    private boolean validAdd(RmqTopic rmqTopic) {
 
 		if (rmqTopic == null) {
 			return false;

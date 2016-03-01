@@ -16,6 +16,7 @@
         <module>rmq-admin</module>
         <module>rmq-biz</module>
         <module>rmq-api</module>
+        <module>rmq-monitor</module>
     </modules>
 
 

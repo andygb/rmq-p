@@ -17,4 +17,6 @@ public interface RmqTopicService {
 
 	int queryCount();
 
+    List<RmqTopic> getAll();
+
 }
