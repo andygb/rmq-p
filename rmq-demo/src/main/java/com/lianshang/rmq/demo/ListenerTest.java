@@ -117,8 +117,9 @@ public class ListenerTest {
         public ConsumeResult onMessage(Message message)  {
             String contentString = null;
             try {
-                TestClass testClass = message.getContentBean(TestClass.class);
-                contentString = testClass.getContent();
+//                TestClass testClass = message.getContentBean(TestClass.class);
+//                contentString = testClass.getContent();
+                contentString = message.getContentString();
                 System.out.println(String.format("msg received by {%s}, topic {%s}, no {%s}, content {%s}",
                         consumerId, topic, no, contentString));
             } catch (SerializationException e) {
