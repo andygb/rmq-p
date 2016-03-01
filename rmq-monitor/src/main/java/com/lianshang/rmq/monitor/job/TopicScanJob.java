@@ -3,6 +3,7 @@ package com.lianshang.rmq.monitor.job;
 import com.lianshang.rmq.api.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +21,7 @@ public class TopicScanJob {
     List<TopicScanObserver> observerList;
 
     public TopicScanJob() {
+        this.observerList = new ArrayList<>();
     }
 
     public TopicScanJob(List<TopicScanObserver> observerList) {
