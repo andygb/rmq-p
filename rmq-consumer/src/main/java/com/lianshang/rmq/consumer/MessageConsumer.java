@@ -14,5 +14,5 @@ public interface MessageConsumer {
      * @param message 消息体
      * @return  消息处理结果
      */
-    ConsumeResult onMessage(Message message);
+    ConsumeResult onMessage(Message message, String topic);
 }

@@ -96,7 +96,7 @@ public class MessageListener {
 
             try {
                 Message message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
-                ConsumeResult result = messageConsumer.onMessage(message);
+                ConsumeResult result = messageConsumer.onMessage(message, topic);
 
                 event.addData("retry", envelope.isRedeliver() ? 1 : 0);
                 event.addData("consumerId", consumerId);

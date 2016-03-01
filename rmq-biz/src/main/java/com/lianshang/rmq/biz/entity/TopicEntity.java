@@ -1,12 +1,9 @@
-package com.lianshang.rmq.api.dto;
+package com.lianshang.rmq.biz.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 import com.google.common.base.MoreObjects;
 
-public class RmqTopic implements Serializable {
-
-	private static final long serialVersionUID = 14567539449343618L;
+public class TopicEntity {
 
 	/**自增ID**/
 	private Integer id;
@@ -14,9 +11,6 @@ public class RmqTopic implements Serializable {
 	/**主题名**/
 	private String name;
 
-    /**
-     * 备注
-     */
     private String memo;
 
 	public Integer getId() {

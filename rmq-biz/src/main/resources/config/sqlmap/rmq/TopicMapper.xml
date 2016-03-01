@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lianshang.rmq.biz.mapper.RmqTopicMapper">
+<mapper namespace="com.lianshang.rmq.biz.mapper.TopicMapper">
 
-	<resultMap id="RmqTopicResult" type="RmqTopicEntity">
+	<resultMap id="TopicResult" type="TopicEntity">
 		<id property="id" column="id" />
 		<id property="name" column="name" />
         <id property="memo" column="memo"/>
@@ -17,7 +17,7 @@
 		select id, name, memo from <include refid="tbl_name"/>
 	</sql>
 
-	<insert id="insert" parameterType="RmqTopicEntity" useGeneratedKeys="true" keyProperty="entity.id">
+	<insert id="insert" parameterType="TopicEntity" useGeneratedKeys="true" keyProperty="entity.id">
 
 		insert into <include refid="tbl_name" />
 		(
@@ -27,18 +27,19 @@
 		values
 		(
 			#{entity.name},
+            #{entity.memo}
 		)
 
 	</insert>
 
-	<select id="load" parameterType="map" resultMap="RmqTopicResult">
+	<select id="load" parameterType="map" resultMap="TopicResult">
 
 		<include refid="select_sql"/>
 		where id = #{id}
 
 	</select>
 
-    <select id="loadByName" parameterType="map" resultMap="RmqTopicResult">
+    <select id="loadByName" parameterType="map" resultMap="TopicResult">
         <include refid="select_sql"/>
         where name = #{name}
     </select>
@@ -46,11 +47,16 @@
 	<update id="update" parameterType="map">
 
 		update <include refid="tbl_name"/> set
-			name = #{entity.name},
-            memo = #{entity.name}
+            memo = #{entity.memo}
 		where id = #{entity.id}
 
 	</update>
+
+    <update id="updateByName" parameterType="map">
+        update <include refid="tbl_name"/> set
+            memo = #{entity.memo}
+        where name = #{entity.name}
+    </update>
 
 	<select id="queryCount" parameterType="map" resultType="int">
 
@@ -58,11 +64,18 @@
 
 	</select>
 
-	<select id="query" parameterType="map" resultMap="RmqTopicResult">
+	<select id="query" parameterType="map" resultMap="TopicResult">
 
 		<include refid="select_sql"/>
 		limit #{offset}, #{pageSize}
 
 	</select>
+
+    <select id="getByStep" parameterType="map" resultMap="TopicResult">
+        <include refid="select_sql"/>
+        where id > #{lastId}
+        limit #{step}
+        order by id
+    </select>
 
 </mapper>

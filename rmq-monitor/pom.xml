@@ -8,5 +8,28 @@
     <artifactId>rmq-monitor</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>com.lianshang.common</groupId>
+            <artifactId>ls-general-utils</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+
+        <!--biz-->
+        <dependency>
+            <groupId>com.lianshang.rmq</groupId>
+            <artifactId>rmq-consumer</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lianshang</groupId>
+            <artifactId>rmq-biz</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+
+    </dependencies>
 
 </project>

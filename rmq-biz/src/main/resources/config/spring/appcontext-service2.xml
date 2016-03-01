@@ -7,8 +7,9 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<bean id="rmqTopicService" class="com.lianshang.rmq.biz.service.impl.RmqTopicServiceImpl" />
+	<bean id="rmqTopicService" class="com.lianshang.rmq.biz.service.impl.TopicServiceImpl" />
 
+    <bean id="messageRecordService" class="com.lianshang.rmq.biz.service.impl.MessageRecordServiceImpl" />
 </beans>
 
 

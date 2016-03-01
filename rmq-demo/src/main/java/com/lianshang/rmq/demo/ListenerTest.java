@@ -114,7 +114,7 @@ public class ListenerTest {
         }
 
         @Override
-        public ConsumeResult onMessage(Message message)  {
+        public ConsumeResult onMessage(Message message, String topic)  {
             String contentString = null;
             try {
 //                TestClass testClass = message.getContentBean(TestClass.class);
@@ -144,7 +144,7 @@ public class ListenerTest {
         long lastTime;
 
         @Override
-        public ConsumeResult onMessage(Message message) {
+        public ConsumeResult onMessage(Message message, String topic) {
             if (running) {
                 try {
                     update(message.getContentString());
