@@ -48,7 +48,7 @@ public class TopicMonitor implements TopicScanObserver {
                     @Override
                     public ConsumeResult onMessage(Message message,String topicss){
                         try {
-                            LOGGER.info("【========获取的消息内容=====" + message.getContentString() + "=======】");
+                            LOGGER.info("【========获取的消息内容====={}=======】", message.getContentString());
                             MessageRecord mr = new MessageRecord();
                             mr.setBirthTime(message.getBirthTime());
                             mr.setTopic(topicss);

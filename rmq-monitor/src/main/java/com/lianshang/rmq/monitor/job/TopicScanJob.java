@@ -31,28 +31,24 @@ public class TopicScanJob {
 
     public TopicScanJob(List<TopicScanObserver> observerList) {
         this.observerList = observerList;
+        if (this.observerList == null) {
+            this.observerList = new ArrayList<>();
+        }
     }
 
     public void run() {
         int lastId = 0;
-        int obeSize = observerList.size();
-       ok: while (true) {//定义标签ok 方便循环跳出
-             List<Topic> list = topicService.getByStep(lastId,STEP);
+        while (true) {//定义标签ok 方便循环跳出
+            List<Topic> list = topicService.getByStep(lastId,STEP);
             if(list!=null && list.size()>0){
                 for(Topic topics  : list){
-                    if(obeSize>0 && observerList != null){
-                        for(TopicScanObserver tso : observerList){
-                            tso.seeTopic(topics);
-                        }
-                    }else{
-                        looger.info("【****************topicscanObserver集合为空***********】");
-                        break ok;
+                    for(TopicScanObserver tso : observerList){
+                        tso.seeTopic(topics);
                     }
-
                 }
-            }else{
+            } else{
                 looger.info("【**************没有查询到有topic***********】");
-                break ok;
+                break;
             }
             lastId +=STEP;
         }
