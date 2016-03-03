@@ -27,6 +27,7 @@ public class Connector {
     private final static String ADRESS_CONFIG_KEY = "rabbitmq.connection.addresses";
     private final static String USERNAME_CONFIG_KEY = "rabbitmq.connection.username";
     private final static String PASSWORD_CONFIG_KEY = "rabbitmq.connection.password";
+    private final static String VHOST_CONFIG_KEY = "rabbitmq.connection.vhost";
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Connector.class);
 
@@ -89,6 +90,7 @@ public class Connector {
 
         factory.setUsername(LionUtil.getString(USERNAME_CONFIG_KEY));
         factory.setPassword(LionUtil.getString(PASSWORD_CONFIG_KEY));
+        factory.setVirtualHost(LionUtil.getString(VHOST_CONFIG_KEY));
         Address[] addresses = getBrokerAddresses();
         if (addresses == null || addresses.length == 0) {
             throw new ConnectionException("No available broker");

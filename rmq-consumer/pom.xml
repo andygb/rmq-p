@@ -62,7 +62,7 @@
         <dependency>
             <groupId>com.lianshang.rmq</groupId>
             <artifactId>rmq-common</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
 
     </dependencies>
