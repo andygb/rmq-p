@@ -24,6 +24,7 @@ public class TopicScanJob {
     final static int STEP = 100;
 
     List<TopicScanObserver> observerList;
+    public static int counts = 0;
 
     public TopicScanJob() {
         this.observerList = new ArrayList<>();
@@ -47,10 +48,12 @@ public class TopicScanJob {
                     }
                 }
             } else{
-                looger.info("【**************没有查询到有topic***********】");
+                looger.info("【**************没有查询到有top***********】");
                 break;
             }
             lastId +=STEP;
         }
+
+        looger.info("[【*********一共调用了{}次**********】",++counts);
     }
 }

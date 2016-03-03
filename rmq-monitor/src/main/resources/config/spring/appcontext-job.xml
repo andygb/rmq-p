@@ -7,7 +7,26 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean class="com.lianshang.rmq.monitor.job.TopicScanJob" id="topicScanJob"/>
+       <!-- 使用MethodInvokingJobDetailFactoryBean，任务类可以不实现Job接口，通过targetMethod指定调用方法-->
+       <!-- 定义目标bean和bean中的方法 -->
+       <bean class="com.lianshang.rmq.monitor.job.TopicScanJob" id="topicScanJob"/>
+       <bean id="SpringQtzJobMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+              <property name="targetObject" ref="topicScanJob" />
+              <property name="targetMethod" value="run" />  <!-- 要执行的方法名称 -->
+       </bean>
+       <!-- ======================== 调度触发器 ======================== -->
+       <bean id="CronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+              <property name="jobDetail" ref="SpringQtzJobMethod"></property>
+              <property name="cronExpression" value="0 0/5 * * * ?"></property><!--每隔5分钟执行一次-->
+       </bean>
 
+       <!-- ======================== 调度工厂 ======================== -->
+       <bean id="SpringJobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+              <property name="triggers">
+                     <list>
+                            <ref bean="CronTriggerBean"/>
+                     </list>
+              </property>
+       </bean>
 
 </beans>
