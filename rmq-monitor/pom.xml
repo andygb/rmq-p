@@ -29,6 +29,13 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.lianshang</groupId>
+            <artifactId>rmq-biz</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+
 
     </dependencies>
 
