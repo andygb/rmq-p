@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import com.lianshang.rmq.biz.mapper.MessageRecordMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;;
 
 public class MessageRecordServiceImpl implements MessageRecordService {
 
@@ -89,10 +88,6 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 		}
 
 		if (messageRecord.getContent() == null) {
-			return false;
-		}
-
-		if (messageRecord.getValidity() == null) {
 			return false;
 		}
 

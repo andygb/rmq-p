@@ -24,6 +24,7 @@ public class TopicScanJob {
     final static int STEP = 100;
 
     List<TopicScanObserver> observerList;
+    public static int counts = 0;
 
     public TopicScanJob() {
         this.observerList = new ArrayList<>();
@@ -38,19 +39,25 @@ public class TopicScanJob {
 
     public void run() {
         int lastId = 0;
-        while (true) {//定义标签ok 方便循环跳出
+        while (true) {
             List<Topic> list = topicService.getByStep(lastId,STEP);
             if(list!=null && list.size()>0){
                 for(Topic topics  : list){
                     for(TopicScanObserver tso : observerList){
-                        tso.seeTopic(topics);
+                        try {
+                            tso.seeTopic(topics);
+                        } catch (Throwable e) {
+                            looger.error("Topic process error!", e);
+                        }
                     }
                 }
             } else{
-                looger.info("【**************没有查询到有topic***********】");
+                looger.info("【**************没有查询到有top***********】");
                 break;
             }
             lastId +=STEP;
         }
+
+        looger.info("[【*********一共调用了{}次**********】",++counts);
     }
 }
