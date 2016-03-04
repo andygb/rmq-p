@@ -26,7 +26,7 @@
        <!-- ======================== 调度触发器 ======================== -->
        <bean id="topicScanJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
               <property name="jobDetail" ref="topicScanJobDetail"/>
-              <property name="cronExpression" value="0 0/2 * * * ?"/><!--每隔5分钟执行一次-->
+              <property name="cronExpression" value="0 0/5 * * * ?"/><!--每隔5分钟执行一次-->
        </bean>
 
        <!-- ======================== 调度工厂 ======================== -->

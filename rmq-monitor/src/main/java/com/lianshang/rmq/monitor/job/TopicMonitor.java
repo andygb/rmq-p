@@ -39,12 +39,11 @@ public class TopicMonitor implements TopicScanObserver {
     @Override
     public void seeTopic(Topic topic) {
         if(topic == null){
-            LOGGER.info("【***********传入topic对象为null，结束查询topic***********】");
+            LOGGER.error("【***********传入topic对象为null，结束查询topic***********】");
             return;
         }
         String topicName = topic.getName();
         if(!listenerMap.containsKey(topicName)){
-            //message 需要的参数不全
             MessageListener ml = null;
 
             try {
@@ -56,8 +55,6 @@ public class TopicMonitor implements TopicScanObserver {
                 LOGGER.error("【====查询topic 连接出错====】",e);
             }
 
-        }else{
-            LOGGER.info("【***********该topic{}已经存在**********】",topicName);
         }
 
     }
@@ -67,7 +64,7 @@ public class TopicMonitor implements TopicScanObserver {
        @Override
        public ConsumeResult onMessage(Message message, String topic) {
            try {
-               LOGGER.info("【*********获取的消息内容********{}*********】", message.getContentString());
+//               LOGGER.info("【*********获取的消息内容********{}*********】", message.getContentString());
                MessageRecord mr = new MessageRecord();
                mr.setBirthTime(message.getBirthTime());
                mr.setTopic(topic);
@@ -77,13 +74,13 @@ public class TopicMonitor implements TopicScanObserver {
                mr.setProducerId(message.getProducerIp());
 
                Long lon = messageRecordService.add(mr);
-               LOGGER.info("【********消息记录增加到了{}行***********】",lon);
+//               LOGGER.info("【********消息记录增加到了{}行***********】",lon);
 
            } catch (SerializationException e) {
                LOGGER.error("【**********消息对象出错**********】",e);
 //               return new ConsumeResult(ConsumeAction.RETRY,"重试" );
            }
-           LOGGER.info("【********成功返回消息对象*********】");
+//           LOGGER.info("【********成功返回消息对象*********】");
            return new ConsumeResult(ConsumeAction.ACCEPT,"ok" );
        }
    }
