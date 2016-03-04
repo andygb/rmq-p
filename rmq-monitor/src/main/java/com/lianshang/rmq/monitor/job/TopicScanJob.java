@@ -39,12 +39,16 @@ public class TopicScanJob {
 
     public void run() {
         int lastId = 0;
-        while (true) {//定义标签ok 方便循环跳出
+        while (true) {
             List<Topic> list = topicService.getByStep(lastId,STEP);
             if(list!=null && list.size()>0){
                 for(Topic topics  : list){
                     for(TopicScanObserver tso : observerList){
-                        tso.seeTopic(topics);
+                        try {
+                            tso.seeTopic(topics);
+                        } catch (Throwable e) {
+                            looger.error("Topic process error!", e);
+                        }
                     }
                 }
             } else{

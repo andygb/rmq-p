@@ -11,7 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <useDefaultDelimiters>false</useDefaultDelimiters>
-        <spring.version>3.2.9.RELEASE</spring.version>
+        <spring.version>4.2.1.RELEASE</spring.version>
         <slf4j.version>1.7.5</slf4j.version>
     </properties>
 

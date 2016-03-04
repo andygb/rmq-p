@@ -74,8 +74,8 @@
     <select id="getByStep" parameterType="map" resultMap="TopicResult">
         <include refid="select_sql"/>
         where id > #{lastId}
-        limit #{step}
         order by id
+        limit #{limit}
     </select>
 
 </mapper>

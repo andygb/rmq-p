@@ -27,6 +27,8 @@ public class TopicMonitor implements TopicScanObserver {
 
     final private static Logger LOGGER = LoggerFactory.getLogger(TopicMonitor.class);
 
+    final private static String CONSUMER_ID = "rmq.monitor.message.record";
+
     @Autowired
     private MessageRecordService messageRecordService;
 
@@ -43,11 +45,10 @@ public class TopicMonitor implements TopicScanObserver {
         String topicName = topic.getName();
         if(!listenerMap.containsKey(topicName)){
             //message 需要的参数不全
-            String cosumIId =topic.getId().toString();
             MessageListener ml = null;
 
             try {
-                ml = new MessageListener(topicName,cosumIId,gmc);
+                ml = new MessageListener(topicName,CONSUMER_ID,gmc);
                 //将topic 和message放入对象中
                 listenerMap.put(topicName,ml);
 
@@ -71,6 +72,7 @@ public class TopicMonitor implements TopicScanObserver {
                mr.setBirthTime(message.getBirthTime());
                mr.setTopic(topic);
                mr.setContent(message.getContentString());
+               mr.setMessageId(message.getId());
 //             mr.setId(message.getId()); id 是自增这里不用设置
                mr.setProducerId(message.getProducerIp());
 
