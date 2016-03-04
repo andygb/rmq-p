@@ -59,6 +59,6 @@ public class TopicScanJob {
             }
         }
 
-        looger.info("[【*********一共调用了{}次**********】",++counts);
+        looger.info("【*********一共调用了{}次**********】",++counts);
     }
 }

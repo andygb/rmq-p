@@ -81,7 +81,7 @@ public class TopicMonitor implements TopicScanObserver {
 
            } catch (SerializationException e) {
                LOGGER.error("【**********消息对象出错**********】",e);
-               return new ConsumeResult(ConsumeAction.RETRY,"重试" );
+//               return new ConsumeResult(ConsumeAction.RETRY,"重试" );
            }
            LOGGER.info("【********成功返回消息对象*********】");
            return new ConsumeResult(ConsumeAction.ACCEPT,"ok" );
