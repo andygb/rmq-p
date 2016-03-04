@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean class="com.lianshang.rmq.monitor.job.TopicMonitor" id="topicMonitor"/>
+    <bean class="com.lianshang.rmq.monitor.job.TopicMonitor" id="topicMonitor" destroy-method="close"/>
 
        <!-- 使用MethodInvokingJobDetailFactoryBean，任务类可以不实现Job接口，通过targetMethod指定调用方法-->
        <!-- 定义目标bean和bean中的方法 -->

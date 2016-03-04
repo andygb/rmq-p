@@ -75,6 +75,10 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 			return false;
 		}
 
+        if (messageRecord.getMessageId() == null) {
+            return false;
+        }
+
 		if (messageRecord.getTopic() == null) {
 			return false;
 		}

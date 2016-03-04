@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.lianshang</groupId>
+
+    <groupId>com.lianshang.rmq</groupId>
     <artifactId>rmq-biz</artifactId>
-    <name>rmq-biz</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -131,29 +131,29 @@
         </dependency>
 
         <dependency>
-            <groupId>com.lianshang</groupId>
+            <groupId>com.lianshang.rmq</groupId>
             <artifactId>rmq-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
-    <dependency>
-        <groupId>com.dianping.lion</groupId>
-        <artifactId>lion-client</artifactId>
-        <version>1.0.0</version>
-    </dependency>
+        <dependency>
+            <groupId>com.dianping.lion</groupId>
+            <artifactId>lion-client</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-    <dependency>
-        <groupId>com.dianping.zebra</groupId>
-        <artifactId>zebra-api</artifactId>
-        <version>1.0.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-framework-bom</artifactId>
-        <version>${org.springframework.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-    </dependency>
+        <dependency>
+            <groupId>com.dianping.zebra</groupId>
+            <artifactId>zebra-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-framework-bom</artifactId>
+            <version>${org.springframework.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
 
     </dependencies>
 

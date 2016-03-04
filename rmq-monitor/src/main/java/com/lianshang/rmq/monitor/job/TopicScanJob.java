@@ -5,6 +5,7 @@ import com.lianshang.rmq.api.service.TopicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,21 +42,21 @@ public class TopicScanJob {
         int lastId = 0;
         while (true) {
             List<Topic> list = topicService.getByStep(lastId,STEP);
-            if(list!=null && list.size()>0){
-                for(Topic topics  : list){
-                    for(TopicScanObserver tso : observerList){
-                        try {
-                            tso.seeTopic(topics);
-                        } catch (Throwable e) {
-                            looger.error("Topic process error!", e);
-                        }
-                    }
-                }
-            } else{
-                looger.info("【**************没有查询到有top***********】");
+
+            if (CollectionUtils.isEmpty(list)) {
                 break;
             }
-            lastId +=STEP;
+
+            for(Topic topic  : list){
+                lastId = Math.max(lastId, topic.getId());
+                for(TopicScanObserver tso : observerList){
+                    try {
+                        tso.seeTopic(topic);
+                    } catch (Throwable e) {
+                        looger.error("Topic process error!", e);
+                    }
+                }
+            }
         }
 
         looger.info("[【*********一共调用了{}次**********】",++counts);

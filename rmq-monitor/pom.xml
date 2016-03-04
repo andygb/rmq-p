@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.lianshang.rmq</groupId>
     <artifactId>rmq-monitor</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <dependencies>
 
@@ -24,9 +24,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.lianshang</groupId>
+            <groupId>com.lianshang.rmq</groupId>
             <artifactId>rmq-biz</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
