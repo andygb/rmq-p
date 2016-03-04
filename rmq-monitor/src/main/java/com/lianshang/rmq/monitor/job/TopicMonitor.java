@@ -36,6 +36,8 @@ public class TopicMonitor implements TopicScanObserver {
 
     GetMessageConsumer gmc  = new GetMessageConsumer();
 
+    private final Object listenerMapLock = new Object();
+
     @Override
     public void seeTopic(Topic topic) {
         if(topic == null){
@@ -44,15 +46,21 @@ public class TopicMonitor implements TopicScanObserver {
         }
         String topicName = topic.getName();
         if(!listenerMap.containsKey(topicName)){
-            MessageListener ml = null;
 
-            try {
-                ml = new MessageListener(topicName,CONSUMER_ID,gmc);
-                //将topic 和message放入对象中
-                listenerMap.put(topicName,ml);
+            synchronized (listenerMapLock) {
+                if (!listenerMap.containsKey(topicName)) {
+                    MessageListener ml = null;
 
-            }catch (ConnectionException e){
-                LOGGER.error("【====查询topic 连接出错====】",e);
+                    try {
+                        ml = new MessageListener(topicName,CONSUMER_ID,gmc);
+                        //将topic 和message放入对象中
+                        listenerMap.put(topicName,ml);
+                        LOGGER.info("Found new topic {}", topic.getName());
+
+                    }catch (ConnectionException e){
+                        LOGGER.error("【====查询topic 连接出错====】",e);
+                    }
+                }
             }
 
         }
