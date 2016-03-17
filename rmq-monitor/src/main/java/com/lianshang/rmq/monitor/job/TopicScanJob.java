@@ -19,13 +19,12 @@ import java.util.TimerTask;
  */
 public class TopicScanJob {
 
-    final private static Logger looger = LoggerFactory.getLogger(TopicScanJob.class);
+    final private static Logger logger = LoggerFactory.getLogger(TopicScanJob.class);
+    final static int STEP = 100;
+    final static long INTERVAL = 1000 * 60 * 5;
 
     @Autowired
     TopicService topicService;
-
-    final static int STEP = 100;
-    final static long INTERVAL = 1000 * 60 * 5;
 
     List<TopicScanObserver> observerList;
 
@@ -67,13 +66,13 @@ public class TopicScanJob {
                     try {
                         tso.seeTopic(topic);
                     } catch (Throwable e) {
-                        looger.error("Topic process error!", e);
+                        logger.error("Topic process error!", e);
                     }
                 }
             }
         }
 
-//        looger.info("【*********一共调用了{}次**********】",++counts);
+//        logger.info("【*********一共调用了{}次**********】",++counts);
     }
 
     public void setObserverList(List<TopicScanObserver> observerList) {
