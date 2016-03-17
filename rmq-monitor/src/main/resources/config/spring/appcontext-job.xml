@@ -11,31 +11,31 @@
 
        <!-- 使用MethodInvokingJobDetailFactoryBean，任务类可以不实现Job接口，通过targetMethod指定调用方法-->
        <!-- 定义目标bean和bean中的方法 -->
-       <bean class="com.lianshang.rmq.monitor.job.TopicScanJob" id="topicScanJob">
-           <constructor-arg name="observerList">
+       <bean class="com.lianshang.rmq.monitor.job.TopicScanJob" id="topicScanJob" init-method="init" destroy-method="destroy">
+           <property name="observerList">
                <list>
                    <ref bean="topicMonitor"/>
                </list>
-           </constructor-arg>
+           </property>
        </bean>
 
-       <bean id="topicScanJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
-              <property name="targetObject" ref="topicScanJob" />
-              <property name="targetMethod" value="run" />  <!-- 要执行的方法名称 -->
-       </bean>
-       <!-- ======================== 调度触发器 ======================== -->
-       <bean id="topicScanJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-              <property name="jobDetail" ref="topicScanJobDetail"/>
-              <property name="cronExpression" value="0 0/5 * * * ?"/><!--每隔5分钟执行一次-->
-       </bean>
+       <!--<bean id="topicScanJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >-->
+              <!--<property name="targetObject" ref="topicScanJob" />-->
+              <!--<property name="targetMethod" value="run" />  &lt;!&ndash; 要执行的方法名称 &ndash;&gt;-->
+       <!--</bean>-->
+       <!--&lt;!&ndash; ======================== 调度触发器 ======================== &ndash;&gt;-->
+       <!--<bean id="topicScanJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
+              <!--<property name="jobDetail" ref="topicScanJobDetail"/>-->
+              <!--<property name="cronExpression" value="0 0/5 * * * ?"/>&lt;!&ndash;每隔5分钟执行一次&ndash;&gt;-->
+       <!--</bean>-->
 
-       <!-- ======================== 调度工厂 ======================== -->
-       <bean id="jobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">
-              <property name="triggers">
-                     <list>
-                            <ref bean="topicScanJobTrigger"/>
-                     </list>
-              </property>
-       </bean>
+       <!--&lt;!&ndash; ======================== 调度工厂 ======================== &ndash;&gt;-->
+       <!--<bean id="jobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">-->
+              <!--<property name="triggers">-->
+                     <!--<list>-->
+                            <!--<ref bean="topicScanJobTrigger"/>-->
+                     <!--</list>-->
+              <!--</property>-->
+       <!--</bean>-->
 
 </beans>

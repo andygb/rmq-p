@@ -9,6 +9,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by yuan.zhong on 2016-03-01.
@@ -23,22 +25,30 @@ public class TopicScanJob {
     TopicService topicService;
 
     final static int STEP = 100;
+    final static long INTERVAL = 1000 * 60 * 5;
 
     List<TopicScanObserver> observerList;
-    public static int counts = 0;
 
-    public TopicScanJob() {
-        this.observerList = new ArrayList<>();
-    }
+    private Timer timer = null;
 
-    public TopicScanJob(List<TopicScanObserver> observerList) {
-        this.observerList = observerList;
+    public void init() {
         if (this.observerList == null) {
             this.observerList = new ArrayList<>();
         }
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                doWork();
+            }
+        }, 1, INTERVAL);
     }
 
-    public void run() {
+    public void destroy() {
+        timer.cancel();
+    }
+
+    public void doWork() {
         int lastId = 0;
         while (true) {
             List<Topic> list = topicService.getByStep(lastId,STEP);
@@ -60,5 +70,9 @@ public class TopicScanJob {
         }
 
 //        looger.info("【*********一共调用了{}次**********】",++counts);
+    }
+
+    public void setObserverList(List<TopicScanObserver> observerList) {
+        this.observerList = observerList;
     }
 }
