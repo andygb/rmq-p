@@ -1,0 +1,35 @@
+.remark label {
+    display: inline-block;
+    padding-right: 16px;
+    margin-right: 9px;
+    background: url(../img/memo.png) no-repeat right top;
+}
+
+.remark .memo4 {
+    background-position: right 5px;
+}
+
+
+.remark .memo0 {
+    background-position: right -117px;
+}
+
+.remark .memo3 {
+    background-position: right -18px;
+}
+
+.remark .memo1 {
+    background-position: right -41px;
+}
+
+.remark .memo5 {
+    background-position: right -64px;
+}
+
+.remark .memo2 {
+    background-position: right -87px;
+}
+
+.remark .notice {
+    clear: none;
+}

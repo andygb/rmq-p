@@ -30,7 +30,7 @@
        </bean>
 
        <!-- ======================== 调度工厂 ======================== -->
-       <bean id="jobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+       <bean id="jobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">
               <property name="triggers">
                      <list>
                             <ref bean="topicScanJobTrigger"/>

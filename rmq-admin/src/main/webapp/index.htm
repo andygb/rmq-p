@@ -1,0 +1,151 @@
+<!--
+* Admin - 管理后台
+* Version 1.0
+*
+-->
+
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page title set in pageTitle directive -->
+    <title page-title></title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font awesome -->
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Toastr style -->
+    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
+
+    <!-- Main Inspinia CSS files -->
+    <link href="css/animate.css" rel="stylesheet">
+    <link id="loadBefore" href="css/style.css" rel="stylesheet">
+
+    <!-- Data Tables -->
+    <link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="css/plugins/dataTables/dataTables.responsive.css" rel="stylesheet">
+    <link href="css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet">
+
+    <!-- Admin Related CSS files -->
+    <link href="css/sites/common.css" rel="stylesheet">
+    <link href="css/sites/navigation.css" rel="stylesheet">
+    <link href="css/sites/user.css" rel="stylesheet">
+
+    <!-- customize css-->
+    <link href="css/remark.css" rel="stylesheet">
+</head>
+
+<!-- ControllerAs syntax -->
+<!-- Main controller with serveral data used in Inspinia theme on diferent view -->
+<body class="{{$state.current.data.specialClass}}" landing-scrollspy id="page-top" >
+
+<!-- Toaster Container -->
+<toaster-container toaster-options="{'animation-class': 'slideDown'}"></toaster-container>
+
+<!-- Main view  -->
+<div ui-view></div>
+
+<!-- jQuery and Bootstrap -->
+<script src="js/jquery/jquery-2.1.1.min.js"></script>
+<script src="js/plugins/jquery-ui/jquery-ui.js"></script>
+<script src="js/bootstrap/bootstrap.min.js"></script>
+
+<!-- MetsiMenu -->
+<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+
+<!-- SlimScroll -->
+<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- Peace JS -->
+<script src="js/plugins/pace/pace.min.js"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="js/admin.js"></script>
+<script src="js/utils.js"></script>
+
+<!-- Main Angular scripts-->
+<script src="js/angular/angular.min.js"></script>
+<script src="js/angular/angular-cookies.js"></script>
+<script src="js/angular/angular-sanitize.min.js"></script>
+<script src="js/angular/i18n/angular-locale_zh-cn.js"></script>
+<script src="js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
+<script src="js/angular-translate/angular-translate.min.js"></script>
+<script src="js/ui-router/angular-ui-router.min.js"></script>
+<script src="js/bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
+<script src="js/plugins/angular-idle/angular-idle.js"></script>
+
+<!-- Data Tables -->
+<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+<script src="js/plugins/dataTables/dataTables.responsive.js"></script>
+<script src="js/plugins/dataTables/dataTables.tableTools.min.js"></script>
+<script src="js/plugins/dataTables/angular-datatables.js"></script>
+
+<!-- toastr -->
+<script src="js/plugins/toastr/toastr.min.js"></script>
+
+<!-- Admin Script -->
+<script src="app/app.core.js"></script>
+
+<script src="app/dim-mgmt/dim-mgmt.module.js"></script>
+<script src="app/dim-mgmt/dim-mgmt.service.js"></script>
+
+<script src="app/user-mgmt/user-mgmt.module.js"></script>
+<script src="app/user-mgmt/user-mgmt.service.js"></script>
+<script src="app/user-mgmt/user-mgmt.controller.js?v=2"></script>
+<script src="app/user-mgmt/modal/bind-bank-card.controller.js"></script>
+
+<script src="app/message-mgmt/message-mgmt.module.js"></script>
+<script src="app/message-mgmt/message-mgmt.service.js"></script>
+<script src="app/message-mgmt/message-mgmt.controller.js"></script>
+
+<script src="app/coupon-mgmt/coupon-mgmt.module.js"></script>
+<script src="app/coupon-mgmt/coupon-mgmt.service.js"></script>
+<script src="app/coupon-mgmt/coupon-mgmt.controller.js"></script>
+
+<script src="app/coupon-mgmt/coupon-userecord-mgmt.service.js"></script>
+
+<script src="app/shop-mgmt/shop-mgmt.module.js"></script>
+<script src="app/shop-mgmt/shop-mgmt.service.js"></script>
+<script src="app/shop-mgmt/shop-mgmt.controller.js"></script>
+
+<script src="app/trade-mgmt/trade-mgmt.module.js"></script>
+<script src="app/trade-mgmt/trade-mgmt.service.js"></script>
+<script src="app/trade-mgmt/trade-mgmt.controller.js"></script>
+<script src="app/trade-mgmt/modal/trade-detail-modal.controller.js"></script>
+<script src="app/trade-mgmt/modal/trade-period-modal.controller.js"></script>
+<script src="app/trade-mgmt/modal/trade-item-mgmt.controller.js"></script>
+<script src="app/trade-mgmt/modal/trade-logistics-modal.controller.js"></script>
+<script src="app/trade-mgmt/modal/trade-cash-mgmt.controller.js"></script>
+<script src="app/trade-mgmt/modal/trade-coupon-mgmt.controller.js"></script>
+<script src="app/trade-mgmt/modal/trade-log.controller.js"></script>
+
+<script src="app/dic-mgmt/dic-mgmt.module.js"></script>
+<script src="app/dic-mgmt/dic-mgmt.service.js"></script>
+<script src="app/dic-mgmt/dic-mgmt.controller.js"></script>
+<script src="app/dic-mgmt/modal/son-dic-mgmt.controller.js"></script>
+
+<script src="app/app.module.js"></script>
+
+<script src="app/constants.js"></script>
+
+<script src="app/components/old-site-link.directive.js"></script>
+<script src="app/components/page-title.directive.js"></script>
+<script src="app/components/minimaliza-sidebar.directive.js"></script>
+<script src="app/components/side-navigation.directive.js"></script>
+<script src="app/components/range.filter.js"></script>
+
+<script src="js/translations.js"></script>
+<script src="app/filters/http.interceptor.js"></script>
+<script src="app/filters/http.filter.js"></script>
+<script src="app/app.config.js"></script>
+
+</body>
+</html>

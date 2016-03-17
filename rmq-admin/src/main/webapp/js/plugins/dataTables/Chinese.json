@@ -1,0 +1,24 @@
+{
+	"sProcessing":   "查询中...",
+	"sLengthMenu":   "显示 _MENU_ 行",
+	"sZeroRecords":  "未找到记录",
+	"sInfo":         "第 _START_ 至 _END_ 行，共 _TOTAL_ 行",
+	"sInfoEmpty":    "第 0 至 0 项行，共 0 行",
+	"sInfoFiltered": "",
+	"sInfoPostFix":  "",
+	"sSearch":       "搜索:",
+	"sUrl":          "",
+	"sEmptyTable":     "未找到记录",
+	"sLoadingRecords": "查询中...",
+	"sInfoThousands":  ",",
+	"oPaginate": {
+		"sFirst":    "首页",
+		"sPrevious": "上页",
+		"sNext":     "下页",
+		"sLast":     "末页"
+	},
+	"oAria": {
+		"sSortAscending":  ": 升序",
+		"sSortDescending": ": 降序"
+	}
+}

@@ -1,0 +1,94 @@
+th, td {
+    white-space: nowrap;
+}
+
+.input-group-cal {
+    display: table;
+}
+
+.dataTables_wrapper .col-sm-12{  
+     overflow:hidden;    
+     overflow-x:auto;
+}
+
+
+.red {
+    color: red;
+}
+
+
+
+.p-w-xxs-i {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+.p-w-xs-i {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+.p-w-sm-i {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+.p-w-m-i {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+}
+.p-w-md-i {
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+}
+.p-w-lg-i {
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+}
+.p-w-xl-i {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+}
+
+.btn-w-sm {
+    min-width: 100px;
+}
+
+.break-word-wrap {
+    word-wrap: break-word;
+}
+nav.navbar {
+    background: #fff;
+}
+
+/* .table {
+    width: 100% !important;
+} */
+
+/* input.ng-invalid {
+    border: 1px solid red;
+}
+textarea.ng-invalid {
+    border: 1px solid red;
+} */
+
+
+/* style.css patch */
+.md-skin .ibox-title,
+.md-skin .ibox-content {
+    border-style: solid solid none;
+}
+
+.large-Modal .modal-dialog{
+    position:absolute;
+    left:50px;
+    right:50px;
+    top:0px;
+    bottom:0px;
+    width:auto !important;
+}
+.mid-Modal .modal-dialog{
+    position:absolute;
+    left:350px;
+    right:350px;
+    top:0px;
+    bottom:0px;
+    width:auto !important;
+}

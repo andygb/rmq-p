@@ -1,0 +1,21 @@
+POST /message-mgmt/send-sms
+
+headers: {
+	token: 'xxxxxx',
+	Content-Type: 'application/x-www-form-urlencoded'
+}
+
+mobileNos | 18600000000，18600000001,   18600000002 | 手机号码，逗号分隔，注意把所有空白字符剔除，并且把全角逗号转成半角逗号
+smsContent | 你好 | 短信内容
+
+{
+	"code": 200,
+	"message": "短信发送成功",
+	"data": {}
+}
+
+{
+	"code": 100,
+	"message": "短信发送失败。请检查以下内容：xxx，110，1860000。",
+	"data": {}
+}
