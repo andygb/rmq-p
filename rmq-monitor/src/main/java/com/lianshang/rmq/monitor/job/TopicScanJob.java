@@ -35,20 +35,24 @@ public class TopicScanJob {
         if (this.observerList == null) {
             this.observerList = new ArrayList<>();
         }
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                doWork();
-            }
-        }, 1, INTERVAL);
+//        timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                doWork();
+//            }
+//        }, 1, INTERVAL);
+    }
+
+    public void run() {
+        doWork();
     }
 
     public void destroy() {
         timer.cancel();
     }
 
-    public void doWork() {
+    private void doWork() {
         int lastId = 0;
         while (true) {
             List<Topic> list = topicService.getByStep(lastId,STEP);
