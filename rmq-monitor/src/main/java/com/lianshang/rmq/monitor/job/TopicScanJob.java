@@ -38,7 +38,12 @@ public class TopicScanJob {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                doWork();
+                try {
+
+                    doWork();
+                } catch (Throwable e) {
+                    logger.error("timer task execute error", e);
+                }
             }
         }, 1, INTERVAL);
     }
