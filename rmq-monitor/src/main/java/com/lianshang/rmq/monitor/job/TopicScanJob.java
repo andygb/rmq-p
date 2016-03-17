@@ -35,13 +35,13 @@ public class TopicScanJob {
         if (this.observerList == null) {
             this.observerList = new ArrayList<>();
         }
-//        timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                doWork();
-//            }
-//        }, 1, INTERVAL);
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                doWork();
+            }
+        }, 1, INTERVAL);
     }
 
     public void run() {
