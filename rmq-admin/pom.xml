@@ -57,6 +57,7 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
+
             <artifactId>jstl</artifactId>
             <version>1.1.2</version>
             <scope>provided</scope>
@@ -111,6 +112,16 @@
             <groupId>com.lianshang.rmq</groupId>
             <artifactId>rmq-monitor</artifactId>
             <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>
