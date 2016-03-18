@@ -1,6 +1,9 @@
 package com.lianshang.rmq.biz.service.impl;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import com.lianshang.rmq.api.dto.MessageRecord;
+import com.lianshang.rmq.api.query.MessageRecordQuery;
 import com.lianshang.rmq.api.service.MessageRecordService;
 import com.lianshang.rmq.biz.entity.MessageRecordEntity;
 import java.util.List;
@@ -13,6 +16,13 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 
 	@Autowired
 	private MessageRecordMapper messageRecordMapper;
+
+    private final Function<MessageRecordEntity, MessageRecord> entity2dtoFunction = new Function<MessageRecordEntity, MessageRecord>() {
+        @Override
+        public MessageRecord apply(MessageRecordEntity input) {
+            return entity2dto(input);
+        }
+    };
 
 	@Override
 	public Long add(MessageRecord messageRecord) {
@@ -49,9 +59,9 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 
 
 	@Override
-	public List<MessageRecord> query(int pageNo, int pageSize) {
+	public List<MessageRecord> query(MessageRecordQuery query, int pageNo, int pageSize) {
 
-		List<MessageRecordEntity> entityList = messageRecordMapper.query((pageNo-1)*pageSize, pageSize);
+		List<MessageRecordEntity> entityList = messageRecordMapper.query(query, (pageNo-1)*pageSize, pageSize);
 		if (entityList == null) {
 			return null;
 		}
@@ -63,11 +73,18 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 		return list;
 	}
 
-	@Override
-	public int queryCount() {
+    @Override
+    public List<MessageRecord> queryByLimit(MessageRecordQuery query, int start, int limit) {
+        List<MessageRecordEntity> entityList = messageRecordMapper.query(query, start, limit);
 
-		return messageRecordMapper.queryCount();
-	}
+        return FluentIterable.from(entityList).transform(entity2dtoFunction).toList();
+    }
+
+    @Override
+    public int queryCount(MessageRecordQuery query) {
+        return messageRecordMapper.queryCount(query);
+    }
+
 
 	private boolean validAdd(MessageRecord messageRecord) {
 
@@ -83,7 +100,7 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 			return false;
 		}
 
-		if (messageRecord.getProducerId() == null) {
+		if (messageRecord.getProducerIp() == null) {
 			return false;
 		}
 
@@ -121,7 +138,7 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 		messageRecordEntity.setId(messageRecord.getId());
         messageRecordEntity.setMessageId(messageRecord.getMessageId());
 		messageRecordEntity.setTopic(messageRecord.getTopic());
-		messageRecordEntity.setProducerId(messageRecord.getProducerId());
+		messageRecordEntity.setProducerIp(messageRecord.getProducerIp());
 		messageRecordEntity.setBirthTime(messageRecord.getBirthTime());
 		messageRecordEntity.setContent(messageRecord.getContent());
 		messageRecordEntity.setValidity(messageRecord.getValidity());
@@ -140,7 +157,7 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 		messageRecord.setId(messageRecordEntity.getId());
         messageRecord.setMessageId(messageRecordEntity.getMessageId());
 		messageRecord.setTopic(messageRecordEntity.getTopic());
-		messageRecord.setProducerId(messageRecordEntity.getProducerId());
+		messageRecord.setProducerIp(messageRecordEntity.getProducerIp());
 		messageRecord.setBirthTime(messageRecordEntity.getBirthTime());
 		messageRecord.setContent(messageRecordEntity.getContent());
 		messageRecord.setValidity(messageRecordEntity.getValidity());

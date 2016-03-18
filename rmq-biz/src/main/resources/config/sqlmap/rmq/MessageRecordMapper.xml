@@ -7,7 +7,7 @@
 		<id property="id" column="id" />
         <id property="messageId" column="message_id"/>
 		<id property="topic" column="topic" />
-		<id property="producerId" column="producer_id" />
+		<id property="producerIp" column="producer_ip" />
 		<id property="birthTime" column="birth_time" />
 		<id property="content" column="content" />
 		<id property="validity" column="validity" />
@@ -20,8 +20,25 @@
 	</sql>
 
 	<sql id="select_sql">
-		select id, message_id, topic, producer_id, birth_time, content, validity, create_time, update_time from <include refid="tbl_name"/>
+		select id, message_id, topic, producer_ip, birth_time, content, validity, create_time, update_time from <include refid="tbl_name"/>
 	</sql>
+
+    <sql id="query_where">
+        <where>
+            <if test="query.topic != null and query.topic != ''">
+                and topic = #{query.topic}
+            </if>
+            <if test="query.birthTimeBegin != null">
+                and birth_time >= #{query.birthTimeBegin}
+            </if>
+            <if test="query.birthTimeEnd != null">
+                and birth_time <![CDATA[ <= ]]> #{query.birthTimeEnd}
+            </if>
+            <if test="query.producerIp != null and query.producerIp != ''">
+                and producer_ip = #{query.producerIp}
+            </if>
+        </where>
+    </sql>
 
 	<insert id="insert" parameterType="MessageRecordEntity" useGeneratedKeys="true" keyProperty="entity.id">
 
@@ -29,7 +46,7 @@
 		(
             message_id,
 			topic,
-			producer_id,
+			producer_ip,
 			birth_time,
 			content
 		)
@@ -37,7 +54,7 @@
 		(
             #{entity.messageId},
 			#{entity.topic},
-			#{entity.producerId},
+			#{entity.producerIp},
 			#{entity.birthTime},
 			#{entity.content}
 		)
@@ -56,7 +73,7 @@
 		update <include refid="tbl_name"/> set
             message_id = #{entity.messageId},
 			topic = #{entity.topic},
-			producer_id = #{entity.producerId},
+			producer_ip = #{entity.producerIp},
 			birth_time = #{entity.birthTime},
 			content = #{entity.content}
 		where id = #{entity.id}
@@ -66,13 +83,16 @@
 	<select id="queryCount" parameterType="map" resultType="int">
 
 		select count(1) from <include refid="tbl_name"/>
+        <include refid="query_where"/>
 
 	</select>
 
 	<select id="query" parameterType="map" resultMap="MessageRecordResult">
 
 		<include refid="select_sql"/>
-		limit #{offset}, #{pageSize}
+        <include refid="query_where"/>
+        order by birth_time desc
+        limit #{offset}, #{pageSize}
 
 	</select>
 

@@ -1,5 +1,6 @@
 package com.lianshang.rmq.biz.mapper;
 
+import com.lianshang.rmq.api.query.MessageRecordQuery;
 import com.lianshang.rmq.biz.entity.MessageRecordEntity;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -19,11 +20,13 @@ public interface MessageRecordMapper {
 	);
 
 	List<MessageRecordEntity> query(
-		@Param("offset") int offset,
-		@Param("pageSize") int pageSize
+            @Param("query")MessageRecordQuery query,
+		    @Param("offset") int offset,
+		    @Param("pageSize") int pageSize
 	);
 
 	int queryCount(
+            @Param("query")MessageRecordQuery query
 	);
 
 }

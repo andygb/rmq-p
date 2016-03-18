@@ -1,0 +1,45 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+<div class="modal-header">
+    <h4 class="modal-title">创建{{modal.productName}}</h4>
+</div>
+<div class="modal-body">
+
+<div class="row form-group">
+    <div class="col-md-12">
+        <div class="form-group m-b-none">
+            <label class="col-md-2 col-md-offset-1 control-label" for="name">名称</label>
+            <div class="col-md-8">
+                <input type="text" name="name" class="form-control"
+                       ng-model="modal.name" required>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row form-group">
+    <div class="col-md-12">
+        <div class="form-group m-b-none">
+            <label class="col-md-2 col-md-offset-1 control-label" for="memo">备注</label>
+            <div class="col-md-8">
+                <textarea type="text" name="memo" class="form-control"
+                          ng-model="modal.memo" required></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-6">
+        <button type="button" class="btn btn-w-sm btn-white" ng-click="cancel()">取消</button>
+        <button type="button" class="btn btn-w-sm btn-primary"
+                ng-click="ok()" ng-disabled="okBtnDisabled">保存
+        </button>
+    </div>
+</div>
+</div>
+</div>
+

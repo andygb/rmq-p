@@ -14,9 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by yuan.zhong on 2016-03-01.
@@ -32,7 +31,7 @@ public class TopicMonitor implements TopicScanObserver {
     @Autowired
     private MessageRecordService messageRecordService;
 
-    Map<String, MessageListener> listenerMap = new HashMap<>();
+    Map<String, MessageListener> listenerMap = new ConcurrentHashMap<>();
 
     GetMessageConsumer gmc  = new GetMessageConsumer();
 
@@ -79,7 +78,7 @@ public class TopicMonitor implements TopicScanObserver {
                mr.setContent(message.getContentString());
                mr.setMessageId(message.getId());
 //             mr.setId(message.getId()); id 是自增这里不用设置
-               mr.setProducerId(message.getProducerIp());
+               mr.setProducerIp(message.getProducerIp());
 
                Long lon = messageRecordService.add(mr);
 //               LOGGER.info("【********消息记录增加到了{}行***********】",lon);

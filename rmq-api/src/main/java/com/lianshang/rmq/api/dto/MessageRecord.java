@@ -18,7 +18,7 @@ public class MessageRecord implements Serializable {
 	private String topic;
 
 	/**发布者IP**/
-	private String producerId;
+	private String producerIp;
 
 	/**消息产生时间**/
 	private Date birthTime;
@@ -59,12 +59,12 @@ public class MessageRecord implements Serializable {
 		this.topic = topic;
 	}
 
-	public String getProducerId() {
-		return producerId;
+	public String getProducerIp() {
+		return producerIp;
 	}
 
-	public void setProducerId(String producerId) {
-		this.producerId = producerId;
+	public void setProducerIp(String producerIp) {
+		this.producerIp = producerIp;
 	}
 
 	public Date getBirthTime() {
@@ -113,7 +113,7 @@ public class MessageRecord implements Serializable {
 		return MoreObjects.toStringHelper(this)
 			.add("id",id)
 			.add("topic",topic)
-			.add("producerId",producerId)
+			.add("producerIp", producerIp)
 			.add("birthTime",birthTime)
 			.add("content",content)
 			.add("validity",validity)

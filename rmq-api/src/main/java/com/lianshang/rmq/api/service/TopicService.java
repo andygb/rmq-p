@@ -17,4 +17,6 @@ public interface TopicService {
 
     List<Topic> getByStep(int lastId, int limit);
 
+    List<Topic> queryByLimit(int start, int limit);
+
 }

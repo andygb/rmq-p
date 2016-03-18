@@ -7,13 +7,8 @@
 
     angular.module('app', [
         'app.core',
-        'app.user-mgmt',
-        'app.message-mgmt',
-        'app.trade-mgmt',
-        'app.coupon-mgmt',
-        'app.shop-mgmt',
-        'app.trade-mgmt',
-        'app.dic-mgmt'
+        'app.topic-mgmt',
+        'app.record'
     ]);
 
 })();
