@@ -3,12 +3,14 @@ package com.lianshang.rmq.admin.resource;
 import com.google.common.collect.ImmutableMap;
 import com.lianshang.rmq.admin.utils.ResponseUtil;
 import com.lianshang.rmq.api.dto.MessageRecord;
+import com.lianshang.rmq.api.exception.ErrCode;
 import com.lianshang.rmq.api.query.MessageRecordQuery;
 import com.lianshang.rmq.api.service.MessageRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -56,6 +58,24 @@ public class RecordResource extends BaseResource {
                 .put("recordsTotal", totalCount)
                 .put("recordsFiltered", totalCount)
                 .put("data", recordList)
+                .build();
+    }
+
+    @POST
+    @Path("/view")
+    public Map<String, Object> view(
+            @FormParam("id") long id
+    ) {
+        MessageRecord record = messageRecordService.load(id);
+
+        if (record == null) {
+            return ResponseUtil.wrap(ErrCode.INVALID_INFO, "无效的消息ID");
+        }
+
+        return ImmutableMap.<String, Object>builder()
+                .put("code", ResponseUtil.SUCCESS_CODE)
+                .put("message", "OK")
+                .put("data", record)
                 .build();
     }
 }

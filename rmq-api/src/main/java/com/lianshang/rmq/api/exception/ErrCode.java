@@ -6,5 +6,7 @@ package com.lianshang.rmq.api.exception;
  * @author yuan.zhong
  */
 public class ErrCode {
-    public static int OPERATION_FAILED = -1;
+    public static int OPERATION_FAILED = -2;
+
+    public static int INVALID_INFO = -1;
 }

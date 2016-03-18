@@ -1,0 +1,80 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="modal-body">
+
+        <div class="row form-group">
+
+                <div class="col-md-12">
+                    <div class="form-group m-b-none">
+                        <label class="col-md-2 col-md-offset-1 control-label" for="messageId">消息ID</label>
+                        <div class="col-md-8">
+                            <input type="text" name="messageId" class="form-control" ng-disabled="true"
+                                   ng-model="modal.messageId" required>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+
+        <div class="row form-group">
+            <div class="col-md-12">
+                <div class="form-group m-b-none">
+                    <label class="col-md-2 col-md-offset-1 control-label" for="topic">Topic</label>
+                    <div class="col-md-8">
+                        <input type="text" name="topic" class="form-control" ng-disabled="true"
+                               ng-model="modal.topic" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-md-12">
+                <div class="form-group m-b-none">
+                    <label class="col-md-2 col-md-offset-1 control-label" for="producerIp">发送方IP</label>
+                    <div class="col-md-8">
+                        <input type="text" name="producerIp" class="form-control" ng-disabled="true"
+                               ng-model="modal.producerIp" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-md-12">
+                <div class="form-group m-b-none">
+                    <label class="col-md-2 col-md-offset-1 control-label" for="birthTime">产生时间</label>
+                    <div class="col-md-8">
+                        <input type="text" name="birthTime" class="form-control" ng-disabled="true"
+                               ng-model="modal.birthTime" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-md-12">
+                <div class="form-group m-b-none">
+                    <label class="col-md-2 col-md-offset-1 control-label" for="content">{{modal.contentName}}</label>
+                    <div class="col-md-8">
+                        <textarea type="text" name="content" class="form-control"
+                                  ng-model="modal.content" required></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--<div class="row">-->
+            <!--<div class="col-md-4">-->
+            <!--</div>-->
+            <!--<div class="col-md-6">-->
+                <!--<button type="button" class="btn btn-w-sm btn-white" ng-click="cancel()">取消</button>-->
+                <!--<button type="button" class="btn btn-w-sm btn-primary"-->
+                        <!--ng-click="ok()" ng-disabled="okBtnDisabled">保存-->
+                <!--</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    </div>
+</div>
+

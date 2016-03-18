@@ -1,16 +1,16 @@
 <div class="wrapper wrapper-content animated fadeInRight">
 <div class="modal-header">
-    <h4 class="modal-title">创建{{modal.productName}}</h4>
+    <h4 class="modal-title">{{modal.modalName}}</h4>
 </div>
 <div class="modal-body">
 
 <div class="row form-group">
     <div class="col-md-12">
         <div class="form-group m-b-none">
-            <label class="col-md-2 col-md-offset-1 control-label" for="name">名称</label>
+            <label class="col-md-2 col-md-offset-1 control-label" for="title">{{modal.titleName}}</label>
             <div class="col-md-8">
-                <input type="text" name="name" class="form-control"
-                       ng-model="modal.name" required>
+                <input type="text" name="title" class="form-control"
+                       ng-model="modal.title" required>
             </div>
         </div>
     </div>
@@ -20,10 +20,10 @@
 <div class="row form-group">
     <div class="col-md-12">
         <div class="form-group m-b-none">
-            <label class="col-md-2 col-md-offset-1 control-label" for="memo">备注</label>
+            <label class="col-md-2 col-md-offset-1 control-label" for="content">{{modal.contentName}}</label>
             <div class="col-md-8">
-                <textarea type="text" name="memo" class="form-control"
-                          ng-model="modal.memo" required></textarea>
+                <textarea type="text" name="content" class="form-control"
+                          ng-model="modal.content" required></textarea>
             </div>
         </div>
     </div>

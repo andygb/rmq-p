@@ -7,6 +7,9 @@ import com.lianshang.rmq.api.dto.Topic;
 import com.lianshang.rmq.api.exception.ErrCode;
 import com.lianshang.rmq.api.service.TopicService;
 import com.lianshang.rmq.api.util.IdUtil;
+import com.lianshang.rmq.provider.MessageProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -30,6 +33,9 @@ import java.util.Map;
 @Path("/topic-mgmt")
 @Produces(MediaType.APPLICATION_JSON)
 public class TopicResource extends BaseResource {
+
+    private final static Logger LOG = LoggerFactory.getLogger(TopicResource.class);
+
 
     @Autowired
     TopicService topicService;
@@ -78,5 +84,24 @@ public class TopicResource extends BaseResource {
                 .put("code", ResponseUtil.SUCCESS_CODE)
                 .put("message", "操作成功")
                 .build();
+    }
+
+    @POST
+    @Path("/produce")
+    public Map<String, Object> produce(
+            @FormParam("topic") String topic,
+            @FormParam("content") String content
+    ) {
+
+        MessageProvider messageProvider = new MessageProvider(topic);
+
+        try {
+            messageProvider.sendString(content);
+        } catch (Exception e) {
+            LOG.error("Produce message error, topic [{}]", topic, e);
+            return ResponseUtil.wrap(e, "发送失败");
+        }
+
+        return ResponseUtil.wrap(ResponseUtil.SUCCESS_CODE, "发送成功");
     }
 }

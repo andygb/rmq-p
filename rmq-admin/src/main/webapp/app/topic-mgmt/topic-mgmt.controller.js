@@ -34,7 +34,8 @@
         $scope.dtColumns = [
             DTColumnBuilder.newColumn('id').withTitle('topicId').notVisible(),
             DTColumnBuilder.newColumn('name').withTitle('名称'),
-            DTColumnBuilder.newColumn('memo').withTitle('备注').notSortable()
+            DTColumnBuilder.newColumn('memo').withTitle('备注').notSortable(),
+            DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml)
         ];
 
         $scope.dtChanged = true;
@@ -48,13 +49,19 @@
                 windowClass: 'bounceIn',
                 size: 'md',
                 controller : function($scope, $modalInstance) {
+                    $scope.modal = {};
+                    $scope.modal.modalName = "创建Topic";
+                    $scope.modal.titleName = "名称";
+                    $scope.modal.contentName = "备注";
+
                     $scope.cancel = function() {
                         $modalInstance.dismiss('cancel');
                     };
 
                     $scope.ok = function() {
                         $scope.okBtnDisabled = true;
-                        topicMgmtService.create($scope.modal.name, $scope.modal.memo)
+
+                        topicMgmtService.create($scope.modal.title, $scope.modal.content)
                             .then(function (response) {
                                 if(response.data.code == 200) {
                                     toaster.pop({
@@ -84,6 +91,56 @@
             })
         };
 
+        $scope.produce = function(topic) {
+            var opener = $scope;
+            $modal.open({
+                templateUrl: 'app/topic-mgmt/modal/add-topic.html',
+                windowClass: 'bounceIn',
+                size: 'lg',
+                controller : function($scope, $modalInstance) {
+                    $scope.modal = {};
+                    $scope.modal.modalName = "发送消息";
+                    $scope.modal.titleName = "Topic";
+                    $scope.modal.contentName = "内容";
+
+                    $scope.modal.title = topic;
+                    $scope.cancel = function() {
+                        $modalInstance.dismiss('cancel');
+                    };
+
+                    $scope.ok = function() {
+                        $scope.okBtnDisabled = true;
+
+                        topicMgmtService.produce($scope.modal.title, $scope.modal.content)
+                            .then(function (response) {
+                                if(response.data.code == 200) {
+                                    toaster.pop({
+                                        type : 'success',
+                                        title: '操作成功',
+                                        showCloseButton: true,
+                                        timeout: 5000
+                                    });
+
+                                    $modalInstance.close();
+                                    opener.dtInstance.reloadData();
+                                } else {
+                                    toaster.pop({
+                                        type: 'error',
+                                        title: '出错啦',
+                                        body: response.data.message,
+                                        showCloseButton: true,
+                                        timeout:5000
+                                    })
+                                }
+                            })
+                            .finally(function() {
+                                $scope.okBtnDisabled = false;
+                            })
+                    }
+                }
+            })
+        }
+
         function serverData(sSource, aoData, fnCallback, oSettings) {
             var draw = aoData[0].value;
             var start = aoData[3].value;
@@ -108,6 +165,11 @@
             return row;
         }
 
+        function actionsHtml(data, type, full, meta) {
+            return '<button class="btn btn-xs btn-danger" ng-click="produce(\'' + full.name + '\')">' +
+                '    <span class="fa fa-mail-forward"></span>发消息' +
+                '</button>';
+        }
 //        $scope.dtInstance.reloadData();
     }
 

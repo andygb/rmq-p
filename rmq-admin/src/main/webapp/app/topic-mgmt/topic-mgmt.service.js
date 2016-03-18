@@ -9,7 +9,8 @@ topicMgmtService.$inject = [ '$http', '$rootScope' ];
 function topicMgmtService($http, $rootScope) {
     return {
         query: query,
-        create: create
+        create: create,
+        produce: produce
     };
 
     function query(
@@ -19,7 +20,7 @@ function topicMgmtService($http, $rootScope) {
         ) {
 
         return $http.post(
-            '/rmq-admin/topic-mgmt/query', {
+            'topic-mgmt/query', {
                 draw: draw,
                 start: start,
                 limit: limit
@@ -32,9 +33,21 @@ function topicMgmtService($http, $rootScope) {
         memo
         ) {
         return $http.post(
-            '/rmq-admin/topic-mgmt/create', {
+            'topic-mgmt/create', {
                 name: name,
                 memo: memo
+            }
+        )
+    }
+
+    function produce(
+        topic,
+        content
+        ) {
+        return $http.post(
+            'topic-mgmt/produce', {
+                topic: topic,
+                content: content
             }
         )
     }
