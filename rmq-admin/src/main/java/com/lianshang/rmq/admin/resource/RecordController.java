@@ -8,13 +8,14 @@ import com.lianshang.rmq.api.dto.MessageRecord;
 import com.lianshang.rmq.api.exception.ErrCode;
 import com.lianshang.rmq.api.query.MessageRecordQuery;
 import com.lianshang.rmq.api.service.MessageRecordService;
+import com.lianshang.sso.api.security.SecurityControl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,11 +27,9 @@ import java.util.Map;
  *
  * @author yuan.zhong
  */
-@Component
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@Path("/record")
-@Produces(MediaType.APPLICATION_JSON)
-public class RecordResource extends BaseResource {
+@Controller
+@RequestMapping(value = "/record")
+public class RecordController extends BaseController {
 
     private final static List<DateFormat> dateFormatList = Lists.<DateFormat>newArrayList(
             new SimpleDateFormat("yyyy-MM-dd"),
@@ -41,16 +40,17 @@ public class RecordResource extends BaseResource {
     @Autowired
     MessageRecordService messageRecordService;
 
-    @POST
-    @Path("/query")
-    public Map<String, Object> query(
-            @FormParam(value = "draw")int draw,
-            @FormParam(value = "topic")String topic,
-            @FormParam(value = "producerIp") String producerIp,
-            @FormParam(value = "birthTimeBegin") String birthTimeBegin,
-            @FormParam(value = "birthTimeEnd") String birthTimeEnd,
-            @FormParam(value = "start")int start,
-            @FormParam(value = "limit")int limit
+    @SecurityControl(sysTableId = "60002",isButton = false)
+    @RequestMapping(value = "/query", produces = "application/json", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> query(
+            @RequestParam(value = "draw")int draw,
+            @RequestParam(value = "topic")String topic,
+            @RequestParam(value = "producerIp") String producerIp,
+            @RequestParam(value = "birthTimeBegin") String birthTimeBegin,
+            @RequestParam(value = "birthTimeEnd") String birthTimeEnd,
+            @RequestParam(value = "start")int start,
+            @RequestParam(value = "limit")int limit
     ) {
         MessageRecordQuery query = new MessageRecordQuery()
                 .setTopic(topic.trim())
@@ -72,10 +72,11 @@ public class RecordResource extends BaseResource {
                 .build();
     }
 
-    @POST
-    @Path("/view")
-    public Map<String, Object> view(
-            @FormParam("id") long id
+    @SecurityControl(sysTableId = "60002",isButton = true, btnScript = "OnView")
+    @RequestMapping(value = "/view", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    Map<String, Object> view(
+            @RequestParam("id") long id
     ) {
         MessageRecord record = messageRecordService.load(id);
 

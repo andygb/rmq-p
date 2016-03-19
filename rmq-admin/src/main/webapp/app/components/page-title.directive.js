@@ -15,11 +15,10 @@
                     // Default title
                     var title = 'Admin | 首页';
                     // Create your own title pattern
-                    if (toState.data && toState.data.pageTitle) {
-                        title = '链尚网 | ' + toState.data.pageTitle;
+                    if (toState.data && toState.data.pageTitle) title = 'Admin | ' + toState.data.pageTitle;
+                    $timeout(function() {
                         element.text(title);
-                    }
-
+                    });
                 };
                 $rootScope.$on('$stateChangeStart', listener);
             }

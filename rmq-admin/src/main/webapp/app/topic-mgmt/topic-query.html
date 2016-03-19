@@ -4,7 +4,7 @@
 
         <div class="row">
             <div class="col-md-2">
-                <button class="btn btn-outline btn-primary" ng-click="create()">创建新Topic</button>
+                <button class="btn btn-outline btn-primary" ng-if="vm.hasCreatePermission" ng-click="create()">创建新Topic</button>
             </div>
         </div>
 

@@ -1,33 +1,30 @@
 package com.lianshang.rmq.admin;
 
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.mvc.beanvalidation.MvcBeanValidationFeature;
-import org.glassfish.jersey.server.mvc.freemarker.FreemarkerMvcFeature;
-import org.springframework.web.filter.RequestContextFilter;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 
 /**
- * 注册器
- * 
- * @author yujie.yao
+ * Created by yuan.zhong on 2016-03-19.
+ *
+ * @author yuan.zhong
  */
-public class Application extends ResourceConfig {
+@SpringBootApplication
+public class Application extends SpringBootServletInitializer {
 
-    /**
-     * 注册JAX-RS组件
-     */
-    public Application() {
-        super(RequestContextFilter.class, JacksonFeature.class, MvcBeanValidationFeature.class);
-
-
-        property(FreemarkerMvcFeature.TEMPLATES_BASE_PATH, "/ftl");
-        property(FreemarkerMvcFeature.TEMPLATE_OBJECT_FACTORY, FreemarkerConfig.class);
-        property(FreemarkerMvcFeature.CACHE_TEMPLATES, false);
-        register(FreemarkerMvcFeature.class);
-        register(MultiPartFeature.class);
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
     }
 
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(Application.class);
+    }
+
+//    public void addInterceptors(InterceptorRegistry registry){
+//        registry.addInterceptor(new SecurityControlInterceptor()).addPathPatterns("/**");
+//    }
 
 
 }

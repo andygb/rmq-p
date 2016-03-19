@@ -5,15 +5,19 @@
 
     'use strict';
 
-    TopicMgmtCtrl.$inject = [ '$scope','$compile', '$modal', 'toaster', 'topicMgmtService', 'DTOptionsBuilder', 'DTColumnBuilder', '$state' ];
+    TopicMgmtCtrl.$inject = [ '$scope','$compile', '$modal', 'toaster', 'topicMgmtService', 'DTOptionsBuilder', 'DTColumnBuilder', '$state', 'permissionCheckService' ];
 
     /**
      * SmsSendCtrl
      */
-    function TopicMgmtCtrl($scope, $compile, $modal, toaster, topicMgmtService, DTOptionsBuilder, DTColumnBuilder, $state) {
+    function TopicMgmtCtrl($scope, $compile, $modal, toaster, topicMgmtService, DTOptionsBuilder, DTColumnBuilder, $state, permissionCheckService) {
         var vm = this;
 
+        vm.hasCreatePermission=permissionCheckService.check(6003,'OnCreate');
+        var hasProducePermission = permissionCheckService.check(6003, 'OnProduce');
+
         $scope.dtInstance = {};
+
 
         $scope.dtOptions = DTOptionsBuilder
             .fromSource('')
@@ -170,7 +174,7 @@
         }
 
         function actionsHtml(data, type, full, meta) {
-            return '<button class="btn btn-xs btn-danger" ng-click="produce(\'' + full.name + '\')">' +
+            return '<button class="btn btn-xs btn-danger" ng-if="'+ hasProducePermission +'" ng-click="produce(\'' + full.name + '\')">' +
                 '    <span class="fa fa-mail-forward"></span>发送消息' +
                 '</button>' +
                 '<button class="btn btn-xs btn-success" ng-click="record(\'' + full.name + '\')">' +

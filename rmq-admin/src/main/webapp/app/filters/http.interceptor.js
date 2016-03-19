@@ -19,14 +19,15 @@ angular
             // optional method
             'response': function(response) {
                 if (response.data && response.data.code && response.data.code != 200) {
-                    toaster.pop({
-                        type: 'error',
-                        title: '出错啦',
-                        body: response.data.message,
-                        showCloseButton: true,
-                        timeout: 15000
-                    });
-                    return $q.reject(response);
+                    console.log(response.data);
+//                    toaster.pop({
+//                        type: 'error',
+//                        title: '出错啦',
+//                        body: response.data.msg,
+//                        showCloseButton: true,
+//                        timeout: 15000
+//                    });
+//                    return $q.reject(response);
                 }
                 return response || $q.when(response);
             },
@@ -48,7 +49,16 @@ angular
                         return $q.reject(rejection);
                     },5500);
 
-                } else {
+                }else if(rejection.status == 598){
+                    toaster.pop({
+                        type: 'error',
+                        title: '无权限',
+                        body: '对不起，无权限或读取权限异常,请稍后重试!',
+                        showCloseButton: true,
+                        timeout: 5000
+                    });
+                }
+                else {
                     toaster.pop({
                         type: 'error',
                         title: '出错啦',

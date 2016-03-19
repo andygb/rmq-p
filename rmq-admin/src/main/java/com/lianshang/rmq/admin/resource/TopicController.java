@@ -8,18 +8,16 @@ import com.lianshang.rmq.api.exception.ErrCode;
 import com.lianshang.rmq.api.service.TopicService;
 import com.lianshang.rmq.api.util.IdUtil;
 import com.lianshang.rmq.provider.MessageProvider;
+import com.lianshang.sso.api.security.SecurityControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
 
@@ -28,13 +26,11 @@ import java.util.Map;
  *
  * @author yuan.zhong
  */
-@Component
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@Path("/topic-mgmt")
-@Produces(MediaType.APPLICATION_JSON)
-public class TopicResource extends BaseResource {
+@Controller
+@RequestMapping(value = "/topic-mgmt")
+public class TopicController extends BaseController {
 
-    private final static Logger LOG = LoggerFactory.getLogger(TopicResource.class);
+    private final static Logger LOG = LoggerFactory.getLogger(TopicController.class);
 
 
     @Autowired
@@ -43,12 +39,13 @@ public class TopicResource extends BaseResource {
     @Autowired
     TopicProxy topicProxy;
 
-    @POST
-    @Path("query")
-    public Map<String, Object> query(
-            @FormParam("draw") int draw,
-            @FormParam("start") int start,
-            @FormParam("limit") int limit
+    @SecurityControl(sysTableId = "60003",isButton = false)
+    @RequestMapping(value = "/query", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    Map<String, Object> query(
+            @RequestParam("draw") int draw,
+            @RequestParam("start") int start,
+            @RequestParam("limit") int limit
     )  {
         List<Topic> topicList = topicService.queryByLimit(start, limit) ;
 
@@ -64,11 +61,11 @@ public class TopicResource extends BaseResource {
                 .build();
     }
 
-    @POST
-    @Path("create")
+    @SecurityControl(sysTableId = "60003",isButton = true, btnScript = "OnCreate")
+    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
     public Map<String, Object> create(
-            @FormParam("name") String name,
-            @FormParam("memo") String memo
+            @RequestParam("name") String name,
+            @RequestParam("memo") String memo
     ) {
         Topic topic = new Topic();
 
@@ -86,11 +83,12 @@ public class TopicResource extends BaseResource {
                 .build();
     }
 
-    @POST
-    @Path("/produce")
-    public Map<String, Object> produce(
-            @FormParam("topic") String topic,
-            @FormParam("content") String content
+    @SecurityControl(sysTableId = "60003",isButton = true, btnScript = "OnProduce")
+    @RequestMapping(value = "/produce", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    Map<String, Object> produce(
+            @RequestParam("topic") String topic,
+            @RequestParam("content") String content
     ) {
 
         MessageProvider messageProvider = new MessageProvider(topic.trim());
