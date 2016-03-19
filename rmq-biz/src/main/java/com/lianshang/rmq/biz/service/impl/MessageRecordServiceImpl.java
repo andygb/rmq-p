@@ -6,10 +6,13 @@ import com.lianshang.rmq.api.dto.MessageRecord;
 import com.lianshang.rmq.api.query.MessageRecordQuery;
 import com.lianshang.rmq.api.service.MessageRecordService;
 import com.lianshang.rmq.biz.entity.MessageRecordEntity;
+
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
 import com.lianshang.rmq.biz.mapper.MessageRecordMapper;
+import com.lianshang.rmq.biz.query.MessageRecordQueryEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class MessageRecordServiceImpl implements MessageRecordService {
@@ -61,7 +64,7 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 	@Override
 	public List<MessageRecord> query(MessageRecordQuery query, int pageNo, int pageSize) {
 
-		List<MessageRecordEntity> entityList = messageRecordMapper.query(query, (pageNo-1)*pageSize, pageSize);
+		List<MessageRecordEntity> entityList = messageRecordMapper.query(dto2entity(query), (pageNo-1)*pageSize, pageSize);
 		if (entityList == null) {
 			return null;
 		}
@@ -75,14 +78,14 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 
     @Override
     public List<MessageRecord> queryByLimit(MessageRecordQuery query, int start, int limit) {
-        List<MessageRecordEntity> entityList = messageRecordMapper.query(query, start, limit);
+        List<MessageRecordEntity> entityList = messageRecordMapper.query(dto2entity(query), start, limit);
 
         return FluentIterable.from(entityList).transform(entity2dtoFunction).toList();
     }
 
     @Override
     public int queryCount(MessageRecordQuery query) {
-        return messageRecordMapper.queryCount(query);
+        return messageRecordMapper.queryCount(dto2entity(query));
     }
 
 
@@ -139,7 +142,7 @@ public class MessageRecordServiceImpl implements MessageRecordService {
         messageRecordEntity.setMessageId(messageRecord.getMessageId());
 		messageRecordEntity.setTopic(messageRecord.getTopic());
 		messageRecordEntity.setProducerIp(messageRecord.getProducerIp());
-		messageRecordEntity.setBirthTime(messageRecord.getBirthTime());
+		messageRecordEntity.setBirthTime(messageRecord.getBirthTime().getTime());
 		messageRecordEntity.setContent(messageRecord.getContent());
 		messageRecordEntity.setValidity(messageRecord.getValidity());
 		messageRecordEntity.setCreateTime(messageRecord.getCreateTime());
@@ -158,12 +161,28 @@ public class MessageRecordServiceImpl implements MessageRecordService {
         messageRecord.setMessageId(messageRecordEntity.getMessageId());
 		messageRecord.setTopic(messageRecordEntity.getTopic());
 		messageRecord.setProducerIp(messageRecordEntity.getProducerIp());
-		messageRecord.setBirthTime(messageRecordEntity.getBirthTime());
+		messageRecord.setBirthTime(new Date(messageRecordEntity.getBirthTime()));
 		messageRecord.setContent(messageRecordEntity.getContent());
 		messageRecord.setValidity(messageRecordEntity.getValidity());
 		messageRecord.setCreateTime(messageRecordEntity.getCreateTime());
 		messageRecord.setUpdateTime(messageRecordEntity.getUpdateTime());
 		return messageRecord;
 	}
+
+    private MessageRecordQueryEntity dto2entity(MessageRecordQuery query) {
+        return new MessageRecordQueryEntity()
+                .setTopic(query.getTopic())
+                .setProducerIp(query.getProducerIp())
+                .setBirthTimeBegin(getDateLong(query.getBirthTimeBegin()))
+                .setBirthTimeEnd(getDateLong(query.getBirthTimeEnd()));
+    }
+
+    private Long getDateLong(Date date) {
+        if (date == null) {
+            return null;
+        }
+
+        return date.getTime();
+    }
 
 }

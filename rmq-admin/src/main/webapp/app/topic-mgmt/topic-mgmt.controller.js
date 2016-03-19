@@ -5,12 +5,12 @@
 
     'use strict';
 
-    TopicMgmtCtrl.$inject = [ '$scope','$compile', '$modal', 'toaster', 'topicMgmtService', 'DTOptionsBuilder', 'DTColumnBuilder' ];
+    TopicMgmtCtrl.$inject = [ '$scope','$compile', '$modal', 'toaster', 'topicMgmtService', 'DTOptionsBuilder', 'DTColumnBuilder', '$state' ];
 
     /**
      * SmsSendCtrl
      */
-    function TopicMgmtCtrl($scope, $compile, $modal, toaster, topicMgmtService, DTOptionsBuilder, DTColumnBuilder) {
+    function TopicMgmtCtrl($scope, $compile, $modal, toaster, topicMgmtService, DTOptionsBuilder, DTColumnBuilder, $state) {
         var vm = this;
 
         $scope.dtInstance = {};
@@ -139,7 +139,11 @@
                     }
                 }
             })
-        }
+        };
+
+        $scope.record = function(topic) {
+            $state.go('record.query', {topic : topic})
+        };
 
         function serverData(sSource, aoData, fnCallback, oSettings) {
             var draw = aoData[0].value;
@@ -167,7 +171,10 @@
 
         function actionsHtml(data, type, full, meta) {
             return '<button class="btn btn-xs btn-danger" ng-click="produce(\'' + full.name + '\')">' +
-                '    <span class="fa fa-mail-forward"></span>发消息' +
+                '    <span class="fa fa-mail-forward"></span>发送消息' +
+                '</button>' +
+                '<button class="btn btn-xs btn-success" ng-click="record(\'' + full.name + '\')">' +
+                '    <span class="fa fa-list"></span>消息记录' +
                 '</button>';
         }
 //        $scope.dtInstance.reloadData();

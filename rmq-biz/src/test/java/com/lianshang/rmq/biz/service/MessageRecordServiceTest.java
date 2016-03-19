@@ -15,6 +15,11 @@ public class MessageRecordServiceTest extends BaseTest {
 	@Autowired
 	private MessageRecordService messageRecordService;
 
+    @Test
+    public void testDate() {
+        System.out.println(new Date(0));
+    }
+
 	@Test
 	public void test() {
 

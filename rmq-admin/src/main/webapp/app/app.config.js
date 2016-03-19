@@ -71,7 +71,20 @@
                 data: {pageTitle: '消息记录'},
                 controller:'RecordCtrl',
                 cache:'false',
-                controllerAs:'vm'
+                controllerAs:'vm',
+                params:{
+                    topic: ''
+                },
+                resolve: {
+                    loadPlugin: function ($ocLazyLoad) {
+                        $ocLazyLoad.load("app.record");
+                        return $ocLazyLoad.load([{
+                            name: 'datePicker',
+                            files: ['css/plugins/datapicker/angular-datapicker.css', 'js/plugins/datapicker/angular-datepicker.js']
+                        }
+                        ]);
+                    }
+                }
             })
         ;
     }

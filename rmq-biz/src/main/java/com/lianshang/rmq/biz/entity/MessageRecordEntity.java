@@ -18,7 +18,7 @@ public class MessageRecordEntity {
 	private String producerIp;
 
 	/**消息产生时间**/
-	private Date birthTime;
+	private Long birthTime;
 
 	/**消息内容字符串**/
 	private String content;
@@ -64,11 +64,11 @@ public class MessageRecordEntity {
 		this.producerIp = producerIp;
 	}
 
-	public Date getBirthTime() {
+	public Long getBirthTime() {
 		return birthTime;
 	}
 
-	public void setBirthTime(Date birthTime) {
+	public void setBirthTime(Long birthTime) {
 		this.birthTime = birthTime;
 	}
 

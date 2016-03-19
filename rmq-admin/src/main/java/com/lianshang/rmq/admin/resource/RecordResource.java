@@ -1,6 +1,8 @@
 package com.lianshang.rmq.admin.resource;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.lianshang.common.utils.general.StringUtil;
 import com.lianshang.rmq.admin.utils.ResponseUtil;
 import com.lianshang.rmq.api.dto.MessageRecord;
 import com.lianshang.rmq.api.exception.ErrCode;
@@ -10,13 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,21 +32,31 @@ import java.util.Map;
 @Produces(MediaType.APPLICATION_JSON)
 public class RecordResource extends BaseResource {
 
+    private final static List<DateFormat> dateFormatList = Lists.<DateFormat>newArrayList(
+            new SimpleDateFormat("yyyy-MM-dd"),
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+    ) ;
+
     @Autowired
     MessageRecordService messageRecordService;
 
     @POST
     @Path("/query")
     public Map<String, Object> query(
-            @FormParam("draw")int draw,
-            @FormParam("topic")String topic,
-            @FormParam("producerIp") String producerIp,
-            @FormParam("start")int start,
-            @FormParam("limit")int limit
+            @FormParam(value = "draw")int draw,
+            @FormParam(value = "topic")String topic,
+            @FormParam(value = "producerIp") String producerIp,
+            @FormParam(value = "birthTimeBegin") String birthTimeBegin,
+            @FormParam(value = "birthTimeEnd") String birthTimeEnd,
+            @FormParam(value = "start")int start,
+            @FormParam(value = "limit")int limit
     ) {
         MessageRecordQuery query = new MessageRecordQuery()
                 .setTopic(topic.trim())
-                .setProducerIp(producerIp.trim());
+                .setProducerIp(producerIp.trim())
+                .setBirthTimeBegin(parseDate(birthTimeBegin))
+                .setBirthTimeEnd(parseDate(birthTimeEnd));
 
         List<MessageRecord> recordList = messageRecordService.queryByLimit(query, start, limit);
 
@@ -77,5 +88,28 @@ public class RecordResource extends BaseResource {
                 .put("message", "OK")
                 .put("data", record)
                 .build();
+    }
+
+    private Date parseDate(String dateStr) {
+        if (StringUtil.isEmpty(dateStr)) {
+            return null;
+        }
+
+        for (DateFormat dateFormat : dateFormatList) {
+            Date date = StringUtil.parseDate(dateStr, dateFormat);
+            if (date != null) {
+                return date;
+            }
+        }
+
+        return null;
+    }
+
+    private Date parseDate(Long dateLong) {
+        if (dateLong == null) {
+            return null;
+        }
+
+        return new Date(dateLong);
     }
 }

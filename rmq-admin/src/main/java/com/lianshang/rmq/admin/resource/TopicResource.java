@@ -72,8 +72,8 @@ public class TopicResource extends BaseResource {
     ) {
         Topic topic = new Topic();
 
-        topic.setName(name);
-        topic.setMemo(memo);
+        topic.setName(name.trim());
+        topic.setMemo(memo.trim());
         Integer topicId = topicProxy.add(topic);
 
         if (!IdUtil.validId(topicId)) {
@@ -93,7 +93,7 @@ public class TopicResource extends BaseResource {
             @FormParam("content") String content
     ) {
 
-        MessageProvider messageProvider = new MessageProvider(topic);
+        MessageProvider messageProvider = new MessageProvider(topic.trim());
 
         try {
             messageProvider.sendString(content);
