@@ -37,7 +37,7 @@
 
         $scope.dtColumns = [
             DTColumnBuilder.newColumn('id').withTitle('topicId').notVisible(),
-            DTColumnBuilder.newColumn('name').withTitle('名称'),
+            DTColumnBuilder.newColumn('name').withTitle('名称').notSortable(),
             DTColumnBuilder.newColumn('memo').withTitle('备注').notSortable(),
             DTColumnBuilder.newColumn(null).withTitle('操作').notSortable().renderWith(actionsHtml)
         ];

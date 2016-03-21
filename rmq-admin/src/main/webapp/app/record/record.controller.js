@@ -47,7 +47,7 @@
             DTColumnBuilder.newColumn('messageId').withTitle("消息ID").notSortable(),
             DTColumnBuilder.newColumn('topic').withTitle("Topic").notSortable(),
             DTColumnBuilder.newColumn('producerIp').withTitle("发送方IP").notSortable(),
-            DTColumnBuilder.newColumn('birthTime').withTitle("产生时间").renderWith(timeHtml),
+            DTColumnBuilder.newColumn('birthTime').withTitle("产生时间").renderWith(timeHtml).notSortable(),
             DTColumnBuilder.newColumn(null).withTitle('操作').renderWith(actionsHtml).notSortable()
         ];
 
