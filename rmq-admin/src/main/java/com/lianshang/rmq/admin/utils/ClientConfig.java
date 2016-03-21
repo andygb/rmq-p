@@ -17,4 +17,5 @@ public class ClientConfig {
         return  LionUtil.getString("boss.client.version");
     }
 
+
 }

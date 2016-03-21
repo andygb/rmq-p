@@ -39,7 +39,7 @@ public class TopicController extends BaseController {
     @Autowired
     TopicProxy topicProxy;
 
-    @SecurityControl(sysTableId = "60003",isButton = false)
+    @SecurityControl(sysTableId = "6003",isButton = false)
     @RequestMapping(value = "/query", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Map<String, Object> query(
@@ -61,7 +61,7 @@ public class TopicController extends BaseController {
                 .build();
     }
 
-    @SecurityControl(sysTableId = "60003",isButton = true, btnScript = "OnCreate")
+    @SecurityControl(sysTableId = "6003",isButton = true, btnScript = "OnCreate")
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
     public Map<String, Object> create(
             @RequestParam("name") String name,
@@ -83,7 +83,7 @@ public class TopicController extends BaseController {
                 .build();
     }
 
-    @SecurityControl(sysTableId = "60003",isButton = true, btnScript = "OnProduce")
+    @SecurityControl(sysTableId = "6003",isButton = true, btnScript = "OnProduce")
     @RequestMapping(value = "/produce", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Map<String, Object> produce(

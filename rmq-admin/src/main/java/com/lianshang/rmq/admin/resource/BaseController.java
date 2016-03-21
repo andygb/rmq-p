@@ -2,6 +2,7 @@ package com.lianshang.rmq.admin.resource;
 
 import com.dianping.lion.EnvZooKeeperConfig;
 import com.lianshang.common.utils.general.LionUtil;
+import com.lianshang.rmq.admin.utils.SSOConfig;
 import com.lianshang.sso.api.response.TokenResponse;
 import com.lianshang.sso.api.utils.CookieUtil;
 import com.lianshang.sso.api.utils.SSOTokenUtils;
@@ -43,19 +44,15 @@ public class BaseController {
     private String ssoUrl = "";
 
     public String getSsoUrl() {
-        String lionSsoBaseUrl = LionUtil.getString("sso.base.url");
-        if (lionSsoBaseUrl != null && lionSsoBaseUrl.trim().length() > 0) {
-            ssoUrl = lionSsoBaseUrl;
-        }
-        return ssoUrl;
+        return SSOConfig.getSSOUrl();
     }
 
     public String getAppKey() {
-        return LionUtil.getString("rabbitmq.sso.appKey");
+        return SSOConfig.getAppKey();
     }
 
     public String getAppSecret() {
-        return LionUtil.getString("rabbitmq.sso.appsecret");
+        return SSOConfig.getAppSecret();
     }
 
 

@@ -1,6 +1,6 @@
 package com.lianshang.rmq.admin.config;
 
-import com.lianshang.sso.api.security.SecurityControlInterceptor;
+import com.lianshang.rmq.admin.security.SecurityInterceptor;
 import org.springframework.boot.context.embedded.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +18,7 @@ import javax.servlet.MultipartConfigElement;
 @ImportResource("classpath*:config/spring/*.xml")
 public class ConfigData extends WebMvcConfigurerAdapter {
 
+
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
@@ -27,6 +28,6 @@ public class ConfigData extends WebMvcConfigurerAdapter {
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SecurityControlInterceptor()).addPathPatterns("/record/**","/topic-mgmt/**", "/rmq-admin/record/**", "/rmq-admin/topic-mgmt");
+        registry.addInterceptor(new SecurityInterceptor()).addPathPatterns("/record/**","/topic-mgmt/**", "/rmq-admin/record/**", "/rmq-admin/topic-mgmt");
     }
 }

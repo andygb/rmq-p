@@ -40,7 +40,7 @@ public class RecordController extends BaseController {
     @Autowired
     MessageRecordService messageRecordService;
 
-    @SecurityControl(sysTableId = "60002",isButton = false)
+    @SecurityControl(sysTableId = "6002",isButton = false)
     @RequestMapping(value = "/query", produces = "application/json", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> query(
@@ -72,7 +72,7 @@ public class RecordController extends BaseController {
                 .build();
     }
 
-    @SecurityControl(sysTableId = "60002",isButton = true, btnScript = "OnView")
+    @SecurityControl(sysTableId = "6002",isButton = true, btnScript = "OnView")
     @RequestMapping(value = "/view", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Map<String, Object> view(
