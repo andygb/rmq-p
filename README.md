@@ -8,7 +8,7 @@ RMQ是一个基于RabbitMQ实现的消息队列系统，实现了发布/订阅�
 
 ### 当前版本
 
-[maven仓库中查看](http://192.168.1.251:8081/artifactory/webapp/search/artifact/?q=rmq-*-1.0.0.*)
+[maven仓库中查看](http://192.168.1.251:8081/artifactory/webapp/search/artifact/?q=rmq-*-1.0.1.*)
 
 #### 发布者
 
@@ -16,7 +16,7 @@ RMQ是一个基于RabbitMQ实现的消息队列系统，实现了发布/订阅�
 		<dependency>
             <groupId>com.lianshang.rmq</groupId>
             <artifactId>rmq-provider</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
 ```
 
@@ -24,8 +24,8 @@ RMQ是一个基于RabbitMQ实现的消息队列系统，实现了发布/订阅�
 ```
         <dependency>
             <groupId>com.lianshang.rmq</groupId>
-            <artifactId>rmq-common</artifactId>
-            <version>1.0.0</version>
+            <artifactId>rmq-consumer</artifactId>
+            <version>1.0.1</version>
         </dependency>
 ```
 
@@ -164,6 +164,12 @@ public class MessageListener {
 
 ---
 
+### 管理后台地址
+
+* beta		http://192.168.1.225:8140/rmq-admin
+* ppe 		http://lsrmq.lian-shang.cn/rmq-admin
+* product	http://lsrmq.lianshang.com/rmq-admin
+
 ### 目前已有topic
 
 |topic | 说明|
@@ -173,7 +179,7 @@ public class MessageListener {
 |trade.create.success|创建订单成功|
 |trade.finish.success|订单交易成功|
 
----
+---> 
 
 ### FAQ
 
