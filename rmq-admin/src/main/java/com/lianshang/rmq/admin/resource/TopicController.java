@@ -63,7 +63,8 @@ public class TopicController extends BaseController {
 
     @SecurityControl(sysTableId = "6003",isButton = true, btnScript = "OnCreate")
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json")
-    public Map<String, Object> create(
+    public @ResponseBody
+    Map<String, Object> create(
             @RequestParam("name") String name,
             @RequestParam("memo") String memo
     ) {
