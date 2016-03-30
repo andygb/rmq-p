@@ -143,10 +143,11 @@ public class MessageProvider {
             serializationEvent.complete();
 
             try {
-                Event publicEvent = Cat.newEvent("RMQ.Produce.Publish", topic);
-                transaction.addChild(publicEvent);
+                Event publishEvent = Cat.newEvent("RMQ.Produce.Publish", topic);
+                transaction.addChild(publishEvent);
+                publishEvent.addData("messageId", message.getId());
                 Connector.getChannel().basicPublish(topic, "", null, messageBytes);
-                publicEvent.complete();
+                publishEvent.complete();
             } catch (IOException e) {
                 throw new ConnectionException(e);
             }

@@ -104,6 +104,8 @@ public class MessageListener {
 
                 // Process
                 Event processEvent = Cat.newEvent("RMQ.Consume.Process", topic);
+                transaction.addChild(processEvent);
+                processEvent.addData("messageId", message.getId());
                 processEvent.addData("consumerId", consumerId);
                 processEvent.addData("consumerIp", IpUtil.getFirstNoLoopbackIP4Address());
                 ConsumeResult result = messageConsumer.onMessage(message, topic);
@@ -111,6 +113,8 @@ public class MessageListener {
 
                 // ACK
                 Event ackEvent = Cat.newEvent("RMQ.Consume.ACK", topic);
+                transaction.addChild(ackEvent);
+                ackEvent.addData("messageId", message.getId());
                 switch (result.action) {
                     case REJECT:
                         getChannel().basicNack(envelope.getDeliveryTag(), false, false);
