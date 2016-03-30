@@ -55,7 +55,7 @@ public class MessageProvider {
             throw new IllegalArgumentException("Message content could not be null!");
         }
 
-        Transaction transaction = Cat.newTransaction("RMQ-Produce", topic);
+        Transaction transaction = Cat.newTransaction("RMQ.Produce", topic);
         try {
             sendContentBytes(content, transaction);
             transaction.setStatus(Transaction.SUCCESS);
@@ -78,7 +78,7 @@ public class MessageProvider {
             throw new IllegalArgumentException("Message content could not be null!");
         }
 
-        Transaction transaction = Cat.newTransaction("RMQ-Produce", topic);
+        Transaction transaction = Cat.newTransaction("RMQ.Produce", topic);
         try {
             sendContentBytes(content.getBytes(), transaction);
             transaction.setStatus(Transaction.SUCCESS);
