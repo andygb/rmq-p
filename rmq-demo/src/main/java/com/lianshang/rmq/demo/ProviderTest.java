@@ -55,8 +55,8 @@ public class ProviderTest {
 
 //            provider.sendBytes(input.getBytes());
 //            provider.sendObject(boxBytes(input.getBytes()));
-//            provider.sendObject(new TestClass(input));
-            provider.sendString(input);
+            provider.sendObject(new TestClass(input));
+//            provider.sendString(input);
         }
 
         for (MessageProvider provider : providers) {
