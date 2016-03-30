@@ -9,6 +9,7 @@ import com.lianshang.rmq.common.Connector;
 import com.lianshang.rmq.common.ConstantDef;
 import com.lianshang.rmq.common.dto.Message;
 import com.lianshang.rmq.common.exception.ConnectionException;
+import com.lianshang.rmq.common.exception.SerializationException;
 import com.lianshang.rmq.common.serialize.SerializeUtils;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -93,15 +94,24 @@ public class MessageListener {
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
             Transaction transaction = Cat.newTransaction("RMQ.Consume", topic);
 
+            Message message;
+
             try {
                 // Deserialization
                 Event deserializationEvent = Cat.newEvent("RMQ.Consume.Deserialization", topic);
                 transaction.addChild(deserializationEvent);
-                Message message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
+                message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
                 deserializationEvent.addData("messageId", message.getId());
                 deserializationEvent.addData("retry", envelope.isRedeliver() ? 1 : 0);
                 deserializationEvent.complete();
+            } catch (SerializationException e) {
+                LOGGER.error("Message deserialization error ! Delivery tag <{}>", envelope.getDeliveryTag(), e);
+                transaction.setStatus(e);
+                transaction.complete();
+                return;
+            }
 
+            try {
                 // Process
                 Event processEvent = Cat.newEvent("RMQ.Consume.Process", topic);
                 transaction.addChild(processEvent);
@@ -109,32 +119,35 @@ public class MessageListener {
                 processEvent.addData("consumerId", consumerId);
                 processEvent.addData("consumerIp", IpUtil.getFirstNoLoopbackIP4Address());
                 ConsumeResult result = messageConsumer.onMessage(message, topic);
+                processEvent.addData("action", result.getAction());
+                processEvent.addData("actionMsg", result.getMessage());
                 processEvent.complete();
 
                 // ACK
                 Event ackEvent = Cat.newEvent("RMQ.Consume.ACK", topic);
                 transaction.addChild(ackEvent);
                 ackEvent.addData("messageId", message.getId());
+                ackEvent.addData("action", result.getAction());
+                ackEvent.addData("actionMsg", result.getMessage());
+
                 switch (result.action) {
                     case REJECT:
                         getChannel().basicNack(envelope.getDeliveryTag(), false, false);
-                        ackEvent.addData("action", "REJECT");
+
                         break;
                     case RETRY:
                         if (envelope.isRedeliver()) {
                             // 已是重试消息
 //                            Connector.getChannel().basicAck(envelope.getDeliveryTag(), false);
                             getChannel().basicNack(envelope.getDeliveryTag(), false, false);
-                            LOGGER.error("Message tag {} consume retry again", envelope.getDeliveryTag());
+                            LOGGER.error("Message id <{}> consume retry again", message.getId());
                         } else {
                             getChannel().basicNack(envelope.getDeliveryTag(), false, true);
                         }
-                        ackEvent.addData("action", "RETRY");
                         break;
                     case ACCEPT:
                     default:
                         getChannel().basicAck(envelope.getDeliveryTag(), false);
-                        ackEvent.addData("action", "ACCEPT");
                         break;
                 }
                 ackEvent.complete();
@@ -142,9 +155,10 @@ public class MessageListener {
                 transaction.setStatus(Transaction.SUCCESS);
             } catch (Throwable e) {
                 // 发生异常，重试
-                LOGGER.error("Consume error, message tag {}", envelope.getDeliveryTag(), e);
+                LOGGER.error("Consume error, message id <{}>", message.getId(), e);
                 if (envelope.isRedeliver()) {
                     getChannel().basicNack(envelope.getDeliveryTag(), false, false);
+                    LOGGER.error("Message id <{}> consume retry again", message.getId());
                 } else {
                     getChannel().basicNack(envelope.getDeliveryTag(), false, true);
                 }
