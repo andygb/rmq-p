@@ -1,6 +1,8 @@
 package com.lianshang.rmq.provider;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Event;
+import com.dianping.cat.message.Transaction;
 import com.dianping.lion.EnvZooKeeperConfig;
 import com.lianshang.common.utils.general.IdGenerator;
 import com.lianshang.common.utils.general.IpUtil;
@@ -48,11 +50,21 @@ public class MessageProvider {
      * @throws SerializationException
      */
     public void sendBytes(byte[] content) throws ConnectionException, SerializationException {
+
         if (content == null) {
             throw new IllegalArgumentException("Message content could not be null!");
         }
 
-        sendContentBytes(content);
+        Transaction transaction = Cat.newTransaction("RMQ-Produce", topic);
+        try {
+            sendContentBytes(content, transaction);
+            transaction.setStatus(Transaction.SUCCESS);
+        } catch (ConnectionException | SerializationException e) {
+            transaction.setStatus(e);
+            throw e;
+        } finally {
+            transaction.complete();
+        }
     }
 
     /**
@@ -66,7 +78,16 @@ public class MessageProvider {
             throw new IllegalArgumentException("Message content could not be null!");
         }
 
-        sendContentBytes(content.getBytes());
+        Transaction transaction = Cat.newTransaction("RMQ-Produce", topic);
+        try {
+            sendContentBytes(content.getBytes(), transaction);
+            transaction.setStatus(Transaction.SUCCESS);
+        } catch (ConnectionException | SerializationException e) {
+            transaction.setStatus(e);
+            throw e;
+        } finally {
+            transaction.complete();
+        }
     }
 
     /**
@@ -87,27 +108,53 @@ public class MessageProvider {
         }
 
         if (content instanceof byte[]) {
-            sendContentBytes((byte[]) content);
+            sendBytes((byte[]) content);
             return;
         }
 
-        byte[] contentBytes = SerializeUtils.serialize(content, SerializeUtils.getContentSerializer());
-
-        sendContentBytes(contentBytes);
-
-        Cat.newEvent("RMQ-Send", topic);
-    }
-
-    private void sendContentBytes(byte[] content) throws SerializationException, ConnectionException {
-        Message message = new Message(IdGenerator.generateRmqId(), IpUtil.getFirstNoLoopbackIP4Address(), new Date(), content);
-
-        byte[] messageBytes = SerializeUtils.serialize(message, SerializeUtils.getMessageSerializer());
+        Transaction transaction = Cat.newTransaction("RMQ.Produce", topic);
 
         try {
-            Connector.getChannel().basicPublish(topic, "", null, messageBytes);
-        } catch (IOException e) {
-            throw new ConnectionException(e);
+
+            Event objectSerializationEvent = Cat.newEvent("RMQ.Product.ObjSerialization", topic);
+            transaction.addChild(objectSerializationEvent);
+            byte[] contentBytes = SerializeUtils.serialize(content, SerializeUtils.getContentSerializer());
+            objectSerializationEvent.complete();
+            sendContentBytes(contentBytes, transaction);
+            transaction.setStatus(Transaction.SUCCESS);
+        } catch (ConnectionException | SerializationException e) {
+            transaction.setStatus(e);
+        } finally {
+            transaction.complete();
         }
+    }
+
+    private void sendContentBytes(byte[] content, Transaction transaction) throws ConnectionException, SerializationException {
+
+        try {
+            Event serializationEvent = Cat.newEvent("RMQ.Produce.Serialization", topic);
+            transaction.addChild(serializationEvent);
+
+            Message message = new Message(IdGenerator.generateRmqId(), IpUtil.getFirstNoLoopbackIP4Address(), new Date(), content);
+
+            byte[] messageBytes = SerializeUtils.serialize(message, SerializeUtils.getMessageSerializer());
+
+            serializationEvent.addData("messageId", message.getId());
+            serializationEvent.complete();
+
+            try {
+                Event publicEvent = Cat.newEvent("RMQ.Produce.Publish", topic);
+                transaction.addChild(publicEvent);
+                Connector.getChannel().basicPublish(topic, "", null, messageBytes);
+                publicEvent.complete();
+            } catch (IOException e) {
+                throw new ConnectionException(e);
+            }
+
+        } catch (ConnectionException | SerializationException e) {
+            throw e;
+        }
+
     }
 
 

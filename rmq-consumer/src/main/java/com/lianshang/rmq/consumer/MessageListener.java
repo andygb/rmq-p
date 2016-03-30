@@ -4,6 +4,7 @@ import com.dianping.cat.Cat;
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.DefaultEvent;
+import com.lianshang.common.utils.general.IpUtil;
 import com.lianshang.rmq.common.Connector;
 import com.lianshang.rmq.common.ConstantDef;
 import com.lianshang.rmq.common.dto.Message;
@@ -90,20 +91,30 @@ public class MessageListener {
 
         @Override
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-            Transaction transaction = Cat.newTransaction("RMQ-Consume", topic);
-            Event event = Cat.newEvent("RMQ-Consume", topic);
-            transaction.addChild(event);
+            Transaction transaction = Cat.newTransaction("RMQ.Consume", topic);
 
             try {
+                // Deserialization
+                Event deserializationEvent = Cat.newEvent("RMQ.Consume.Deserialization", topic);
+                transaction.addChild(deserializationEvent);
                 Message message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
+                deserializationEvent.addData("messageId", message.getId());
+                deserializationEvent.addData("retry", envelope.isRedeliver() ? 1 : 0);
+                deserializationEvent.complete();
+
+                // Process
+                Event processEvent = Cat.newEvent("RMQ.Consume.Process", topic);
+                processEvent.addData("consumerId", consumerId);
+                processEvent.addData("consumerIp", IpUtil.getFirstNoLoopbackIP4Address());
                 ConsumeResult result = messageConsumer.onMessage(message, topic);
+                processEvent.complete();
 
-                event.addData("retry", envelope.isRedeliver() ? 1 : 0);
-                event.addData("consumerId", consumerId);
-
+                // ACK
+                Event ackEvent = Cat.newEvent("RMQ.Consume.ACK", topic);
                 switch (result.action) {
                     case REJECT:
                         getChannel().basicNack(envelope.getDeliveryTag(), false, false);
+                        ackEvent.addData("action", "REJECT");
                         break;
                     case RETRY:
                         if (envelope.isRedeliver()) {
@@ -114,12 +125,15 @@ public class MessageListener {
                         } else {
                             getChannel().basicNack(envelope.getDeliveryTag(), false, true);
                         }
+                        ackEvent.addData("action", "RETRY");
                         break;
                     case ACCEPT:
                     default:
                         getChannel().basicAck(envelope.getDeliveryTag(), false);
+                        ackEvent.addData("action", "ACCEPT");
                         break;
                 }
+                ackEvent.complete();
 
                 transaction.setStatus(Transaction.SUCCESS);
             } catch (Throwable e) {
@@ -133,7 +147,6 @@ public class MessageListener {
                 transaction.setStatus(e);
             }
 
-            event.complete();
             transaction.complete();
         }
 
