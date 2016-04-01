@@ -97,13 +97,14 @@ public class MessageListener {
             Message message;
 
             try {
+                transaction.addData("retry", envelope.isRedeliver() ? 1 : 0);
+                transaction.addData("consumerId", consumerId);
+                transaction.addData("consumerIp", IpUtil.getFirstNoLoopbackIP4Address());
                 // Deserialization
+                message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
                 Event deserializationEvent = Cat.newEvent("RMQ.Consume.Deserialization", topic);
                 transaction.addChild(deserializationEvent);
-                message = SerializeUtils.deserialize(body, Message.class,  SerializeUtils.getMessageSerializer());
-                deserializationEvent.addData("messageId", message.getId());
-                deserializationEvent.addData("retry", envelope.isRedeliver() ? 1 : 0);
-                deserializationEvent.complete();
+                transaction.addData("messageId", message.getId());
             } catch (SerializationException e) {
                 LOGGER.error("Message deserialization error ! Delivery tag <{}>", envelope.getDeliveryTag(), e);
                 transaction.setStatus(e);
@@ -113,22 +114,13 @@ public class MessageListener {
 
             try {
                 // Process
+                ConsumeResult result = messageConsumer.onMessage(message, topic);
                 Event processEvent = Cat.newEvent("RMQ.Consume.Process", topic);
                 transaction.addChild(processEvent);
-                processEvent.addData("messageId", message.getId());
-                processEvent.addData("consumerId", consumerId);
-                processEvent.addData("consumerIp", IpUtil.getFirstNoLoopbackIP4Address());
-                ConsumeResult result = messageConsumer.onMessage(message, topic);
-                processEvent.addData("action", result.getAction());
-                processEvent.addData("actionMsg", result.getMessage());
-                processEvent.complete();
+                transaction.addData("processAction", result.getAction());
+                transaction.addData("processMsg", result.getMessage());
 
                 // ACK
-                Event ackEvent = Cat.newEvent("RMQ.Consume.ACK", topic);
-                transaction.addChild(ackEvent);
-                ackEvent.addData("messageId", message.getId());
-                ackEvent.addData("action", result.getAction());
-                ackEvent.addData("actionMsg", result.getMessage());
 
                 switch (result.action) {
                     case REJECT:
@@ -150,7 +142,8 @@ public class MessageListener {
                         getChannel().basicAck(envelope.getDeliveryTag(), false);
                         break;
                 }
-                ackEvent.complete();
+                Event ackEvent = Cat.newEvent("RMQ.Consume.ACK", topic);
+                transaction.addChild(ackEvent);
 
                 transaction.setStatus(Transaction.SUCCESS);
             } catch (Throwable e) {

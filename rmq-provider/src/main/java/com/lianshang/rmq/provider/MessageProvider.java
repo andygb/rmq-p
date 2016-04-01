@@ -115,11 +115,9 @@ public class MessageProvider {
         Transaction transaction = Cat.newTransaction("RMQ.Produce", topic);
 
         try {
-
+            byte[] contentBytes = SerializeUtils.serialize(content, SerializeUtils.getContentSerializer());
             Event objectSerializationEvent = Cat.newEvent("RMQ.Product.ObjSerialization", topic);
             transaction.addChild(objectSerializationEvent);
-            byte[] contentBytes = SerializeUtils.serialize(content, SerializeUtils.getContentSerializer());
-            objectSerializationEvent.complete();
             sendContentBytes(contentBytes, transaction);
             transaction.setStatus(Transaction.SUCCESS);
         } catch (ConnectionException | SerializationException e) {
@@ -132,22 +130,20 @@ public class MessageProvider {
     private void sendContentBytes(byte[] content, Transaction transaction) throws ConnectionException, SerializationException {
 
         try {
-            Event serializationEvent = Cat.newEvent("RMQ.Produce.Serialization", topic);
-            transaction.addChild(serializationEvent);
+
 
             Message message = new Message(IdGenerator.generateRmqId(), IpUtil.getFirstNoLoopbackIP4Address(), new Date(), content);
+            transaction.addData("messageId", message.getId());
 
             byte[] messageBytes = SerializeUtils.serialize(message, SerializeUtils.getMessageSerializer());
 
-            serializationEvent.addData("messageId", message.getId());
-            serializationEvent.complete();
+            Event serializationEvent = Cat.newEvent("RMQ.Produce.Serialization", topic);
+            transaction.addChild(serializationEvent);
 
             try {
+                Connector.getChannel().basicPublish(topic, "", null, messageBytes);
                 Event publishEvent = Cat.newEvent("RMQ.Produce.Publish", topic);
                 transaction.addChild(publishEvent);
-                publishEvent.addData("messageId", message.getId());
-                Connector.getChannel().basicPublish(topic, "", null, messageBytes);
-                publishEvent.complete();
             } catch (IOException e) {
                 throw new ConnectionException(e);
             }
